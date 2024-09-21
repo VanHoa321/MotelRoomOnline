@@ -1,0 +1,102 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.Criteria
+@{
+    ViewData["Title"] = "Chỉnh sửa";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Chỉnh sửa tiêu chí phòng</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý tiêu chí phòng</li>
+                        <li class="breadcrumb-item active">Chỉnh sửa tiêu chí phòng</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <form method="post" id="quickForm" asp-action="Edit">
+                            <div class="card-body">
+                                <input type="text" class="form-control mb-3" asp-for="CriteriaId" type="hidden">
+                                <div class="form-group">
+                                    <label asp-for="CriteriaName">CriteriaName</label>
+                                    <input type="text" asp-for="CriteriaName" class="form-control" placeholder="Nhập tên tiêu chí phòng">
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Description">Description</label>
+                                    <textarea class="form-control mb-3" asp-for="Description" placeholder="Nhập mô tả thêm" style=" height: 100px"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="IsActive">Active</label>
+                                    <div class="icheck-success d-inline" style="margin-left:10px">
+                                        @Html.CheckBox("IsActive", new { id = "checkboxSuccess1" })
+                                        <label for="checkboxSuccess1"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a asp-controller="Criteria" asp-action="Index" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" title="Lưu"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+@section Scripts{
+    <script src="~/admin/assets/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/admin/assets/plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="~/admin/assets/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/admin/assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    CriteriaName: {
+                        required: true,
+                        minlength: 5,
+                    }
+                },
+                messages: {
+                    CriteriaName: {
+                        required: "Tên tiêu chí phòng không được để trống",
+                        minlength: "Tên tiêu chí phòng phải có ít nhất {0} ký tự!"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('.select2').select2()
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+        });
+    </script>
+}
