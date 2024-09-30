@@ -1,0 +1,171 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.Account
+@{
+    ViewData["Title"] = "Chỉnh sửa thông tin";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Chỉnh sửa thông tin cá nhân</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý thông tin cá nhân</li>
+                        <li class="breadcrumb-item active">Chỉnh sửa thông tin</li>
+                    </ol>
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(Functions.message))
+            {
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <i class="icon fas fa-exclamation-triangle"></i>@Functions.message
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <form method="post" id="quickForm" asp-controller="Profile" asp-action="EditAccount">
+                            <div class="card-body">
+                                <input type="text" class="form-control mb-3" asp-for="AccountId" type="hidden">
+                                <input type="text" class="form-control mb-3" asp-for="AccountName" type="hidden">
+                                <input type="text" class="form-control mb-3" asp-for="Password" type="hidden">
+                                <input type="text" class="form-control mb-3" asp-for="Status" type="hidden">
+                                <input type="text" class="form-control mb-3" asp-for="RoleID" type="hidden">
+                                <input type="hidden" asp-for="ModifiedDate" class="form-control" value="@Functions.getCurrenDate()" readonly>
+                                <input type="hidden" asp-for="CreatedDate" class="form-control" readonly>
+                                <div class="form-group">
+                                    <label asp-for="FullName">FullName</label>
+                                    <input type="text" asp-for="FullName" class="form-control" placeholder="Nhập họ tên người dùng">
+                                </div>
+                                <div class="form-group" style="display:flex; margin-top:40px">
+                                    <button class="btn btn-success mr-2" type="button" onclick="openDialog()">Chọn</button>
+                                    <input type="text" class="form-control" asp-for="Avatar" id="file_input" />
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Phone">Phone</label>
+                                    <input type="text" asp-for="Phone" class="form-control" placeholder="Nhập số điện thoại">
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Email">Email</label>
+                                    <input type="email" asp-for="Email" class="form-control" placeholder="Nhập thư điện tử">
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Address">Address</label>
+                                    <input type="text" asp-for="Address" class="form-control" placeholder="Nhập địa chỉ">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="DOB">Ngày sinh</label>
+                                            <input type="date" asp-for="DOB" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <label asp-for="Gender">Giới tính</label>
+                                                <select asp-for="Gender" class="form-control select2bs4" style="width: 100%">
+                                                    <option value="true" selected>Nam</option>
+                                                    <option value="false">Nữ</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                               
+                            </div>
+                            <div class="card-footer">
+                                <a asp-controller="Profile" asp-action="Index" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" title="Lưu"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+@{
+    var summerNote = new MotelRoomOnline.Areas.Landlord.Models.SummerNote("#Content");
+    <partial name="_SummerNote" model="summerNote" />
+}
+@section Scripts{
+    <script src="~/admin/assets/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/admin/assets/plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="~/admin/assets/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/admin/assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    FullName: {
+                        required: true,
+                        minlength: 5
+                    },                    
+                    Phone: {
+                        required: true,
+                        minlength: 10
+                    },
+                    Email: {
+                        required: true,
+                        email: true
+                    },
+                    Address: {
+                        required: true
+                    },
+                    DOB: {
+                        required: true
+                    }
+                },
+                messages: {
+                    FullName: {
+                        required: "Tên người dùng không được để trống",
+                        minlength: "Tên người dùng phải có ít nhất {0} ký tự"
+                    },
+                    Phone: {
+                        required: "Số điện thoại không được để trống",
+                        minlength: "Số điện thoại phải có ít nhất {0} ký tự"
+                    },
+                    Email: {
+                        required: "Email không được để trống",
+                        email: "Vui lòng nhập đúng định dạng Email"
+                    },
+                    Address: {
+                        required: "Địa chỉ không được để trống"
+                    },
+                    DOB: {
+                        required: "Ngày sinh không được để trống"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('.select2').select2()
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+
+        });
+    </script>
+}

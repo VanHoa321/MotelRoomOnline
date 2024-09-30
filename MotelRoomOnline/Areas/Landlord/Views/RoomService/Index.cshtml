@@ -1,0 +1,134 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.ViewModels.RoomServiceViewModel
+
+@{
+    ViewData["Title"] = "Quản lý phòng trọ";
+    List<RoomStatus> list = ViewBag.roomStatus;
+}
+
+<style>
+    .form-check {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+
+    .form-check-input:checked {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .form-check-input {
+        transform: scale(1.5);
+        margin-right: 10px;
+    }
+
+    .form-check-label {
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .price-input {
+        display: none;
+        margin-top: 20px;
+        width: 300px;
+    }
+
+    .price-label {
+        margin-left: 8px;
+        font-weight: 500;
+    }
+
+</style>
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Danh sách dịch vụ phòng</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý tiêu chí</li>
+                        <li class="breadcrumb-item active">Danh sách dịch vụ phòng</li>
+                    </ol>
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(Functions.message))
+            {
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <i class="icon fas fa-exclamation-triangle"></i>@Functions.message
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header p-3 text-center">
+                            <h4>@Model.Room?.RoomName</h4>
+                        </div>
+                        <form asp-action="SaveServices" method="post">
+                            <div class="card-body">
+                                <input type="hidden" asp-for="Room.RoomId" />
+                                @foreach (var services in Model.AllServices)
+                                {
+                                    <div class="form-group form-check">
+                                        <input type="checkbox" class="form-check-input" id="service_@services.ServiceId" name="SelectedServicesIds" value="@services.ServiceId"
+                                        @(Model.SelectedServicesIds != null && Model.SelectedServicesIds.Contains(services.ServiceId) ? "checked" : "")
+                                               onchange="togglePriceInput(@services.ServiceId)" />
+                                        <label class="form-check-label" for="service_@services.ServiceId">@services.ServiceName</label>
+
+                                        <input type="number" class="price-input form-control" id="priceInput_@services.ServiceId"
+                                               name="ServicePrices[@services.ServiceId]"
+                                               value="@(Model.ServicePrices != null && Model.ServicePrices.ContainsKey(services.ServiceId) ? Model.ServicePrices[services.ServiceId] : "")"
+                                               placeholder="Nhập giá dịch vụ @services.ServiceName (Vnđ)" min="0" />
+                                    </div>
+                                }
+                            </div>
+                            <div class="card-footer">
+                                <a asp-controller="Room" asp-action="Index" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" title="Lưu tiện ích"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+
+<script>
+    function togglePriceInput(serviceId) {
+        var checkbox = document.getElementById('service_' + serviceId);
+        var priceInput = document.getElementById('priceInput_' + serviceId);
+
+        if (checkbox.checked) {
+            priceInput.style.display = 'inline-block';
+        } else {
+            priceInput.style.display = 'none';
+        }
+    }
+
+    // Kiểm tra tất cả checkbox khi trang tải lại
+    document.addEventListener("DOMContentLoaded", function () {
+        var serviceIds = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AllServices.Select(s => s.ServiceId).ToList()));
+
+        serviceIds.forEach(function (serviceId) {
+            var checkbox = document.getElementById('service_' + serviceId);
+            var priceInput = document.getElementById('priceInput_' + serviceId);
+            if (checkbox && checkbox.checked) {
+                priceInput.style.display = 'inline-block';
+            }
+        });
+    });
+</script>
+
+

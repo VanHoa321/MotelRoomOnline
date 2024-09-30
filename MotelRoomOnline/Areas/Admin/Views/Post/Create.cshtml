@@ -97,41 +97,37 @@
         $(function () {
             $('#quickForm').validate({
                 rules: {
-                    ItemName: {
+                    PostTitle: {
                         required: true,
-                        minlength: 2,
+                        minlength: 10,
                     },
-                    ItemOrder: {
+                    PostImage: {
                         required: true,
-                        min: 1
                     },
-                    AreaName: {
-                        required: true
+                    Abstract: {
+                        required: true,
+                        minlength: 20,
                     },
-                    ControllerName: {
-                        required: true
-                    },
-                    ActionName: {
-                        required: true
+                    Content: {
+                        required: true,
+                        minlength: 20,
                     }
                 },
                 messages: {
-                    ItemName: {
-                        required: "Tên Menu không được để trống",
-                        minlength: "Tên Menu phải có ít nhất {0} ký tự!"
+                    PostTitle: {
+                        required: "Tiêu đề bài viết không được để trống",
+                        minlength: "Tiêu đề bài viết phải có ít nhất {0} ký tự!"
                     },
-                    ItemOrder: {
-                        required: "Vị trí hiển thị không được để trống",
-                        min: "Vị trí hiển thị phải lớn hơn {0}!"
+                    PostImage: {
+                        required: "Ảnh bài viết không được để trống"
                     },
-                    AreaName: {
-                        required: "Tên Area không được để trống"
+                    Abstract: {
+                        required: "Mô tải ngắn bài viết không được để trống",
+                        minlength: "Mô tải ngắn bài viết phải có ít nhất {0} ký tự!"
                     },
-                    ControllerName: {
-                        required: "Tên Controller không được để trống"
-                    },
-                    ActionName: {
-                        required: "Tên Action không được để trống"
+                    Content: {
+                        required: "Nội dung bài viết không được để trống",
+                        minlength: "Nội dung bài viết phải có ít nhất {0} ký tự!"
                     }
                 },
                 errorElement: 'span',

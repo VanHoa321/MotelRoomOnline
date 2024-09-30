@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -22,10 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Landlord\Controllers\" />
     <Folder Include="Areas\Landlord\Data\" />
-    <Folder Include="Areas\Landlord\Models\" />
-    <Folder Include="Areas\Landlord\Views\" />
   </ItemGroup>
 
   <ItemGroup>

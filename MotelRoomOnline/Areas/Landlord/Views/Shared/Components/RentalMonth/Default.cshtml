@@ -1,0 +1,42 @@
+﻿@using MotelRoomOnline.Utilities
+@model IList<RentalMonth>
+
+<table id="example-table" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+            <th>Trạng thái</th>
+            <th>Chức năng</th>
+        </tr>
+    </thead>
+    <tbody id="showdata">
+        @{
+            int i = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@(i++)</td>
+                <td>@item.StartDate.ToString("dd/MM/yyyy")</td>
+                <td>@item.EndDate.ToString("dd/MM/yyyy")</td>
+                <td class="text-info">@(item.Status == 1? "Chưa thanh toán" : "Đã thanh toán")</td>
+                <td>
+                    @if(item.Status == 1)
+                    {
+                        <a asp-area="Landlord" asp-controller="ContractDetail" asp-action="Index"
+                           asp-route-id="@item.RentalMonthId" class="btn btn-info btn-sm"
+                        title="Thanh toán"><i class="fa-solid fa-money-bill"></i></a>
+                    }
+                    else
+                    {
+                        <a asp-area="Landlord" asp-controller="ContractDetail" asp-action="Detail"
+                           asp-route-id="@item.RentalMonthId" class="btn btn-success btn-sm"
+                           title="Thanh toán"><i class="fa-solid fa-eye"></i></a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

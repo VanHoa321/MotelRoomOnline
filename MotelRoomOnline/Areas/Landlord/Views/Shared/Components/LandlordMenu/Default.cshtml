@@ -1,0 +1,48 @@
+﻿@using MotelRoomOnline.Areas.Admin.Models
+@model IList<AdminMenu>
+
+<!-- Sidebar Menu -->
+<nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        @foreach (var item in Model.Where(m => m.ItemLevel == 1).OrderBy(n => n.ItemOrder))
+        {
+            var Pid = item.AdminMenuId;
+            var Smenu = Model.Where(p => p.ParentLevel == Pid).OrderBy(p => p.ItemOrder).ToList();
+            var CountSmenu = Smenu.Count;
+            @if (CountSmenu > 0)
+            {
+                <li class="nav-item">
+                    <a href="/@item.AreaName/@item.ControllerName/@item.ActionName" class="nav-link">
+                        <i class="@item.Icon nav-icon"></i>
+                        <p>
+                            @item.ItemName
+                            <i class="fas fa-angle-left right"></i>
+                            <span class="badge badge-info right">@CountSmenu</span>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        @foreach (var smn in Smenu)
+                        {
+                            <li class="nav-item">
+                                <a href="/@smn.AreaName/@smn.ControllerName/@smn.ActionName" class="nav-link">
+                                    <i class="@smn.Icon nav-icon"></i>
+                                    <p>@smn.ItemName</p>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a href="/@item.AreaName/@item.ControllerName/@item.ActionName" class="nav-link">
+                        <i class="@item.Icon nav-icon"></i>
+                        <p>@item.ItemName</p>
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+</nav>
+<!-- End Sidebar Menu -->

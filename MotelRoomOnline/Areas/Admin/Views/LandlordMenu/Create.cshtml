@@ -1,0 +1,166 @@
+﻿@model MotelRoomOnline.Areas.Admin.Models.AdminMenu
+@{
+    ViewData["Title"] = "Thêm mới";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Thêm mới Menu</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý Menu</li>
+                        <li class="breadcrumb-item active">Thêm mới Menu</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <form method="post" id="quickForm" asp-controller="LandlordMenu" asp-action="Create">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="ItemName">ItemName</label>
+                                            <input type="text" asp-for="ItemName" class="form-control" placeholder="Nhập tên Menu">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="ItemLevel">ItemLevel</label>
+                                            <select asp-for="ItemLevel" class="form-control select2bs4" style="width: 100%">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="ParentLevel">ParentLevel</label>
+                                    <select asp-for="ParentLevel" class="form-control select2bs4" asp-items="@(new SelectList(ViewBag.mnList,"Value","Text"))"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="ItemOrder">ItemOrder</label>
+                                    <input type="text" asp-for="ItemOrder" class="form-control" placeholder="Nhập vị trí hiển thị">
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Icon">Icon</label>
+                                    <input type="text" asp-for="Icon" class="form-control" placeholder="Nhập Icon Menu">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="AreaName">AreaName</label>
+                                            <input type="text" asp-for="AreaName" class="form-control" placeholder="Nhập tên Area" value="Landlord">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="ControllerName">ControllerName</label>
+                                            <input type="text" asp-for="ControllerName" class="form-control" placeholder="Nhập tên Controller">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="ActionName">ActionName</label>
+                                            <input type="text" asp-for="ActionName" class="form-control" placeholder="Nhập tên Action">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="IsActive">Active</label>
+                                    <div class="icheck-success d-inline" style="margin-left:10px">
+                                        @Html.CheckBox("IsActive", new { id = "checkboxSuccess1" })
+                                        <label for="checkboxSuccess1"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a asp-controller="LandlordMenu" asp-action="Index" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" title="Lưu"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+@section Scripts{
+    <script src="~/admin/assets/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/admin/assets/plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="~/admin/assets/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/admin/assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    ItemName: {
+                        required: true,
+                        minlength: 2,
+                    },
+                    ItemOrder: {
+                        required: true,
+                        min: 1
+                    },
+                    AreaName: {
+                        required: true
+                    },
+                    ControllerName: {
+                        required: true
+                    },
+                    ActionName: {
+                        required: true
+                    }
+                },
+                messages: {
+                    ItemName: {
+                        required: "Tên Menu không được để trống",
+                        minlength: "Tên Menu phải có ít nhất {0} ký tự!"
+                    },
+                    ItemOrder: {
+                        required: "Vị trí hiển thị không được để trống",
+                        min: "Vị trí hiển thị phải lớn hơn {0}!"
+                    },
+                    AreaName: {
+                        required: "Tên Area không được để trống"
+                    },
+                    ControllerName: {
+                        required: "Tên Controller không được để trống"
+                    },
+                    ActionName: {
+                        required: "Tên Action không được để trống"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('.select2').select2()
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+        });
+    </script>
+}

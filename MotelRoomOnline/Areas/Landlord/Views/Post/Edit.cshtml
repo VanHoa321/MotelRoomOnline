@@ -1,0 +1,148 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.Post
+@{
+    ViewData["Title"] = "Chỉnh sửa";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Chỉnh sửa bài viết của tôi</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý bài viết</li>
+                        <li class="breadcrumb-item active">Chỉnh sửa bài viết</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <form method="post" id="quickForm" asp-action="Edit">
+                            <div class="card-body">
+                                <input type="text" class="form-control mb-3" asp-for="PostId" type="hidden">
+                                <input type="text" class="form-control mb-3" asp-for="IsActive" type="hidden">
+                                <div class="form-group">
+                                    <label asp-for="PostTitle">PostTitle</label>
+                                    <input type="text" asp-for="PostTitle" class="form-control" placeholder="Nhập tiêu đề bài viết">
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="PostCategoryId">PostCategoryId</label>
+                                    <select asp-for="PostCategoryId" class="form-control select2bs4" asp-items="@(new SelectList(ViewBag.list,"Value","Text"))"></select>
+                                </div>
+                                <div class="form-group" style="display:flex; margin-top:40px">
+                                    <button class="btn btn-success mr-2" type="button" onclick="openDialog()">Chọn</button>
+                                    <input type="text" class="form-control" asp-for="PostImage" id="file_input" />
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Abstract">Abstract</label>
+                                    <textarea class="form-control mb-3" asp-for="Abstract" placeholder="Nhập mô tả thêm" style=" height: 100px"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Content">Content</label>
+                                    <textarea class="form-control mb-3" asp-for="Content" placeholder="Nhập nội dung bài viết" style=" height: 100px"></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="CreatedDate">CreatedDate</label>
+                                            <input type="text" asp-for="CreatedDate" class="form-control" value="@Functions.getCurrenDate()" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="CreatedBy">CreatedBy</label>
+                                            <input type="text" asp-for="CreatedBy" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                </div>                               
+                            </div>
+                            <div class="card-footer">
+                                <a asp-controller="Post" asp-action="Index" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" title="Lưu"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+@{
+    var summerNote = new MotelRoomOnline.Areas.Landlord.Models.SummerNote("#Content");
+    <partial name="_SummerNote" model="summerNote" />
+}
+@section Scripts{
+    <script src="~/admin/assets/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/admin/assets/plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="~/admin/assets/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/admin/assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    PostTitle: {
+                        required: true,
+                        minlength: 10,
+                    },
+                    PostImage: {
+                        required: true,
+                    },
+                    Abstract: {
+                        required: true,
+                        minlength: 20,
+                    },
+                    Content: {
+                        required: true,
+                        minlength: 20,
+                    }
+                },
+                messages: {
+                    PostTitle: {
+                        required: "Tiêu đề bài viết không được để trống",
+                        minlength: "Tiêu đề bài viết phải có ít nhất {0} ký tự!"
+                    },
+                    PostImage: {
+                        required: "Ảnh bài viết không được để trống"
+                    },
+                    Abstract: {
+                        required: "Mô tải ngắn bài viết không được để trống",
+                        minlength: "Mô tải ngắn bài viết phải có ít nhất {0} ký tự!"
+                    },
+                    Content: {
+                        required: "Nội dung bài viết không được để trống",
+                        minlength: "Nội dung bài viết phải có ít nhất {0} ký tự!"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('.select2').select2()
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+
+        });
+    </script>
+}

@@ -18,18 +18,18 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            if (!Functions.IsLogin())
+            if (!Functions.IsLogin(1))
             {
                 return Redirect("/Login/Index");
             }
-            var items = _context.AdminMenus.OrderByDescending(m => m.AdminMenuId).ToList();
+            var items = _context.AdminMenus.Where(m => m.AreaName == ("Admin")).OrderByDescending(m => m.AdminMenuId).ToList();
             ViewBag.List = _context.AdminMenus.ToList();
             return View(items);
         }
 
         public IActionResult Create()
         {
-            var mnList = (from m in _context.AdminMenus.Where(m => (m.IsActive == true))
+            var mnList = (from m in _context.AdminMenus.Where(m => (m.IsActive == true) && (m.AreaName == ("Admin")) && (m.ItemLevel == 1))
                           select new SelectListItem()
                           {
                               Text = m.ItemName,
@@ -67,7 +67,7 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var mnList = (from m in _context.AdminMenus.Where(m => (m.IsActive == true))
+            var mnList = (from m in _context.AdminMenus.Where(m => (m.IsActive == true) && (m.AreaName == ("Admin")) && (m.ItemLevel == 1))
                           select new SelectListItem()
                           {
                               Text = m.ItemName,
@@ -121,7 +121,7 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
         }
         public IActionResult GetData()
         {
-            var items = _context.AdminMenus.OrderByDescending(m => m.AdminMenuId).Take(10).ToList();
+            var items = _context.AdminMenus.Where(m => m.AreaName == ("Admin")).OrderByDescending(m => m.AdminMenuId).Take(10).ToList();
             return Json(new { data = items, totalItems = items.Count });
         }
     }

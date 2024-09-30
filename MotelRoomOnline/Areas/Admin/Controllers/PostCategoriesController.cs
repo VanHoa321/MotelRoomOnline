@@ -17,7 +17,7 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            if (!Functions.IsLogin())
+            if (!Functions.IsLogin(1))
             {
                 return Redirect("/Login/Index");
             }
@@ -98,7 +98,7 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
 
         public IActionResult GetData()
         {
-            var items = _context.PostCategories.OrderByDescending(p => p.PostCategoryId).ToList();
+            var items = _context.PostCategories.OrderByDescending(p => p.PostCategoryId).Take(10).ToList();
             return Json(new { data = items, totalItems = items.Count });
         }
     }

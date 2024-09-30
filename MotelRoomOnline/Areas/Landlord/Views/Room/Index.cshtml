@@ -1,0 +1,200 @@
+﻿@using MotelRoomOnline.Models
+@using MotelRoomOnline.Utilities
+@model IList<Room>
+
+@{
+    ViewData["Title"] = "Quản lý phòng trọ";
+    List<RoomStatus> list = ViewBag.roomStatus;
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Danh sách phòng trọ</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý phòng trọ</li>
+                        <li class="breadcrumb-item active">Danh sách phòng trọ</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <a type="button" class="btn btn-success" asp-area="Landlord" asp-controller="Room" asp-action="Create">
+                                    <i class="fa-solid fa-plus" title="Thêm mới phòng trọ"></i>
+                                </a>
+                                <a href="#" type="button" id="loadData" class="btn btn-secondary">
+                                    <i class="fa-solid fa-rotate-right" style="color:white" title="Tải lại dữ liệu"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table id="example-table" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Tên phòng</th>
+                                        <th>Diện tích</th>
+                                        <th>Giá phòng</th>
+                                        <th>Trạng thái</th>
+                                        <th>Chức năng</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="showdata">
+                                    @{
+                                        int i = 1;
+                                    }
+                                    @foreach (var item in Model)
+                                    {
+                                        var name = list.FirstOrDefault(l => l.RoomStatusId == item.RoomStatusId);
+                                        <tr id="tr_@item.RoomId">
+                                            <td>@(i++)</td>
+                                            <td><img src="@item.Image" style="width:80px; height:60px" /></td>
+                                            <td>@item.RoomName</td>
+                                            <td>@item.Acreage m<sup>2</sup></td>
+                                            <td>@Functions.ToVnd(item.PriceRoom) đ</td>
+                                            <td>
+                                                <p class="text-success" title="Trạng thái phòng">@name?.RoomStatusName</p>
+                                            </td>
+                                            <td>
+                                                <a asp-area="Landlord" asp-controller="Room" asp-action="Edit"
+                                                   asp-route-id="@item.RoomId" class="btn btn-info btn-sm"
+                                                   title="Sửa thông tin"><i class="fa-solid fa-pen-to-square"></i></a>                                             
+
+                                                <a asp-area="Landlord" asp-controller="RoomImage" asp-action="Index"
+                                                   asp-route-id="@item.RoomId" class="btn btn-info btn-sm"
+                                                   title="Sửa ảnh giới thiệu"><i class="fa-regular fa-image"></i></a>
+
+                                                <a asp-area="Landlord" asp-controller="RoomService" asp-action="Index"
+                                                   asp-route-id="@item.RoomId" class="btn btn-info btn-sm"
+                                                   title="Quản lý dịch vụ"><i class="fa-solid fa-money-bill"></i></a>
+
+                                                <a asp-area="Landlord" asp-controller="RoomCriteria" asp-action="Index"
+                                                   asp-route-id="@item.RoomId" class="btn btn-info btn-sm"
+                                                   title="Quản lý tiêu chí"><i class="fa-solid fa-bell-concierge"></i></a>
+
+                                                <a class="btn btn-danger btn-sm btn-delete" data-id="@item.RoomId"
+                                                   title="Xóa phòng"><i class="fa-solid fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            function formatCurrency(value) {
+                return value.toLocaleString('vi-VN');
+            }
+
+            function LoadData() {
+                $.ajax({
+                    url: "/Landlord/Room/GetData",
+                    type: "GET",
+                    success: function (res) {
+                        if (res.totalItems > 0) {
+                            var items = res.data;
+                            var listStatus = res.roomStatus;
+                            var str = "";
+                            for (let i = 0; i < res.totalItems; i++) {
+                                var item = items[i];
+                                var status = listStatus.find(l => l.roomStatusId === item.roomStatusId);
+                                str += `<tr id="tr_${item.roomId}">
+                                        <td>${i + 1}</td>
+                                        <td><img src="${item.image}" style="width:80px; height:60px" /></td>
+                                        <td>${item.roomName}</td>
+                                        <td>${item.acreage} m<sup>2</sup></td>
+                                        <td>${formatCurrency(item.priceRoom)} đ</td>
+                                        <td><p class="text-success">${status.roomStatusName}</p></td>
+                                        <td>
+                                            <a href="/Landlord/Room/Edit/${item.roomId}" class="btn btn-info btn-sm" title="Sửa thông tin">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>                                            
+                                            <a href="/Landlord/Room/Image/${item.roomId}" class="btn btn-info btn-sm" title="Sửa ảnh giới thiệu">
+                                                <i class="fa-regular fa-image"></i>
+                                            </a>
+                                            <a href="/Landlord/RoomService/Index/${item.roomId}" class="btn btn-info btn-sm" title="Quản lý dịch vụ">
+                                                <i class="fa-solid fa-money-bill"></i>
+                                            </a>
+                                            <a href="/Landlord/RoomCriteria/Index/${item.roomId}" class="btn btn-info btn-sm" title="Quản lý tiêu chí">
+                                                <i class="fa-solid fa-bell-concierge"></i>
+                                            </a>
+                                            <a class="btn btn-danger btn-sm btn-delete" data-id="${item.roomId}" title="Xóa phòng">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>`;
+                            }
+                            $('#showdata').html(str);
+                            toastr.success('Cập nhật dữ liệu thành công');
+                        } else {
+                            $('#showdata').html("<tr><td colspan='7' class='text-center'>Không có dữ liệu</td></tr>");
+                        }
+                    },
+                    error: function (err) {
+                        console.error("Lỗi khi gọi LoadData:", err);
+                    }
+                });
+            }
+
+            $('body').on('click', '.btn-delete', function () {
+                _id = $(this).data("id");
+                Swal.fire({
+                    title: "Xác nhận xóa phòng?",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Xóa",
+                    cancelButtonText: "Hủy"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/Landlord/Room/Delete",
+                            type: "POST",
+                            data: { id: _id },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    toastr.success('Xóa phòng trọ thành công');
+                                    LoadData();
+                                }
+                                else {
+                                    toastr.error('Xóa phòng trọ không thành công');
+                                }
+                            }
+                        });
+                    }
+                });
+            })
+
+            $('#loadData').click(function (e) {
+                e.preventDefault();
+                LoadData();
+            });
+        })
+    </script>
+}
+
+

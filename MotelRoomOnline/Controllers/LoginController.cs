@@ -31,18 +31,20 @@ namespace MotelRoomOnline.Controllers
                 Functions.message = "Tài khoản trên không tồn tại!";
                 return RedirectToAction("Index", "Login");
             }
+            if (account.Status == false)
+            {
+                Functions.message = "Tài khoản đã bị khóa!";
+                return RedirectToAction("Index", "Login");
+            }
+            Functions.account = check;
             Functions.message = string.Empty;
             switch (check.RoleID)
             {
                 case 1:
-                    Functions.account = check;
+
                     return RedirectToAction("Index", "Home", new { area = "Admin" });
                 case 2:
-                    Functions.account = check;
-                    return RedirectToAction("Index", "Post", new { area = "Admin" });
-                case 3:
-                    Functions.account = check;
-                    return RedirectToAction("Index", "Post", new { area = "Admin" });
+                    return RedirectToAction("Index", "Home", new { area = "Landlord" });
                 default:
                     return RedirectToAction("Index", "Home");
             }

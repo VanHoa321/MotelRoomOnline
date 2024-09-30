@@ -1,0 +1,129 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.ViewModels.RentalMonthDetailsViewModel
+@{
+    ViewData["Title"] = "Chi tiết tháng thuê";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Tháng thuê @Model.RentalMonth.StartDate.ToString("dd/MM/yyyy") - @Model.RentalMonth.EndDate.ToString("dd/MM/yyyy")</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý hợp đồng</li>
+                        <li class="breadcrumb-item active">Chi tiết tháng thuê</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <form method="post" asp-action="Index">
+                            <input type="hidden" name="RentalMonthId" value="@Model.RentalMonth.RentalMonthId" />
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mt-2">
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Tiền phòng</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" value="@Functions.ToVnd(Model.RentalMonth.PriceRoom)" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @foreach (var items in Model.RoomServices)
+                                {
+                                    var name = Model.Services.FirstOrDefault(s => s.ServiceId == items.ServiceId);
+                                    <div class="row">
+                                        <div class="col-md-4 mt-2">
+                                            <div class="form-group row">
+                                                <label class="col-sm-4 col-form-label">@name?.ServiceName</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control service-price" name="ServicePrices[@items.RoomServiceId]" value="@Functions.ToVnd(items.Price)" readonly>
+                                                    <input type="hidden" name="RoomServices[@items.RoomServiceId].RoomServiceId" value="@items.RoomServiceId" />
+                                                    <input type="hidden" name="RoomServices[@items.RoomServiceId].Price" value="@items.Price" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mt-2">
+                                            <div class="form-group row">
+                                                <label class="col-sm-4 col-form-label">Số lượng dùng</label>
+                                                <div class="col-sm-8">
+                                                    <input type="number" class="form-control service-quantity" name="ServiceQuantities[@items.RoomServiceId]" placeholder="Nhập số lượng dùng" oninput="calculateTotal()" data-price="@items.Price" data-roomserviceid="@items.RoomServiceId">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mt-2">
+                                            <div class="form-group row">
+                                                <label class="col-sm-4 col-form-label">Thành tiền</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control service-total_@items.RoomServiceId" name="RoomServices[@items.RoomServiceId].Total" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                <hr />
+                                <div class="row">
+                                    <div class="col-md-4 mt-2">
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">Tổng tiền</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" name="total" id="totalAmount" value="@Functions.ToVnd(Model.RentalMonth.PriceRoom)" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="javascript:history.back()" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <button type="submit" class="btn btn-info"><i class="fa-solid fa-money-bill" title="Thanh toán"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+<script>
+    function calculateTotal() {
+        var total = 0;
+        var priceRoom = parseFloat('@Model.RentalMonth.PriceRoom');
+
+        $('.service-quantity').each(function () {
+            var quantity = parseFloat($(this).val()) || 0;
+            var price = parseFloat($(this).data('price'));
+            var roomServiceId = $(this).data('roomserviceid');
+
+            var serviceTotal = quantity * price;
+            $('.service-total_' + roomServiceId).val(Functions.ToVnd(serviceTotal));
+            total += serviceTotal;
+        });
+
+        var totalAmount = total + priceRoom;
+        $('#totalAmount').val(Functions.ToVnd(totalAmount));
+    }
+
+    var Functions = {
+        ToVnd: function (amount) {
+            return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }).replace('₫', '');
+        }
+    };
+
+    // Gọi hàm tính tổng ngay khi trang được tải
+    $(document).ready(function () {
+        calculateTotal();
+    });
+</script>

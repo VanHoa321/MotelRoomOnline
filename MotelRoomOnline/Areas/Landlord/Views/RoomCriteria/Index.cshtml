@@ -1,0 +1,76 @@
+﻿@model MotelRoomOnline.Models.ViewModels.RoomCriteriaViewModel
+
+@{
+    ViewData["Title"] = "Quản lý phòng trọ";
+}
+
+<style>
+    .form-check-input:checked {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .form-check-input {
+        transform: scale(1.5);
+        margin-right: 10px;
+    }
+
+    .form-check-label {
+        margin-left: 8px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+</style>
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Danh sách tiêu chí phòng</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý tiêu chí</li>
+                        <li class="breadcrumb-item active">Danh sách tiêu chí phòng</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-info">
+                        <div class="card-header p-3 text-center">
+                            <h4>@Model.Room?.RoomName</h4>
+                        </div>
+                        <form asp-action="SaveCriterias" method="post">
+                            <div class="card-body">
+                                <input type="hidden" asp-for="Room.RoomId" />
+                                @foreach (var criteria in Model.AllCriterias)
+                                {
+                                    <div class="form-group form-check">
+                                        <input type="checkbox" class="form-check-input" name="SelectedCriteriaIds" id="criteria_@criteria.CriteriaId" value="@criteria.CriteriaId"
+                                        @(Model.SelectedCriteriaIds != null && Model.SelectedCriteriaIds.Contains(criteria.CriteriaId) ? "checked" : "") />
+                                        <label class="form-check-label" for="criteria_@criteria.CriteriaId">@criteria.CriteriaName</label>
+                                    </div>
+                                }
+                            </div>
+                            <div class="card-footer">
+                                <a asp-controller="Room" asp-action="Index" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" title="Lưu tiện ích"></i></button>
+                            </div>
+                        </form>                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+
+
+

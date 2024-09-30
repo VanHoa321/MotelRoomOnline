@@ -1,0 +1,156 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.Contract
+@{
+    ViewData["Title"] = "Chi tiết hợp đồng";
+    Room room = ViewBag.Room;
+    Customer customer = ViewBag.Customer;
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Chi tiết hợp đồng thuê trọ</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý thuê trọ</li>
+                        <li class="breadcrumb-item active">Chi tiết hợp đồng</li>
+                    </ol>
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(Functions.message))
+            {
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <i class="icon fas fa-exclamation-triangle"></i>@Functions.message
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <div class="card-body">
+                            <input type="text" class="form-control mb-3" asp-for="ContractId" type="hidden">
+                            
+                            <h4 class="text-info">Thông tin phòng trọ</h4>
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width:150px">Hình ảnh</th>
+                                        <th style="width:400px">Tên trọ</th>
+                                        <th style="width:300px">Địa chỉ</th>
+                                        <th style="width:100px">Diện tích</th>
+                                        <th style="width:100px">Ở tối đa</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><img src="@room.Image" style="width:80px; height:80px" /></td>
+                                        <td>@room.RoomName</td>
+                                        <td>@room.Address</td>
+                                        <td>@room.Acreage m<sup>2</sup></td>
+                                        <td>@room.MaxPeople người</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="text-info mt-4">Thông tin khách hàng</h4>
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width:150px">Hình ảnh</th>
+                                        <th style="width:400px">Họ tên</th>
+                                        <th style="width:300px">CCCD</th>
+                                        <th style="width:100px">Ngày sinh</th>
+                                        <th style="width:100px">SĐT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><img src="@customer.Avatar" style="width:80px; height:80px" /></td>
+                                        <td>@customer.FullName</td>
+                                        <td>@customer.Code</td>
+                                        <td>@customer.DOB.Value.ToString("dd/MM/yyyy")</td>
+                                        <td>@customer.Phone</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="text-info mt-4">Thông tin hợp đồng</h4>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Ngày tạo</label>
+                                        <input type="text" class="form-control" value="@Model.CreatedDate.ToString("dd/MM/yyyy")" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Giá thuê</label>
+                                        <input type="text" class="form-control" value="@Functions.ToVnd(Model.PriceRoom) đ/Tháng" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Tiền cọc</label>
+                                        <input type="text" class="form-control" value="@Functions.ToVnd(Model.DepositAmount) đ" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <a class="btn btn-success addRental">
+                                <i class="fa-solid fa-plus" title="Thêm tháng thuê"></i>
+                            </a>
+                            @await Component.InvokeAsync("RentalMonth")
+                        </div>
+                        <div class="card-footer">
+                            <a asp-controller="Contract" asp-action="Index" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+
+@section Scripts{
+    <script src="~/admin/assets/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/admin/assets/plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="~/admin/assets/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/admin/assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('body').on('click', '.addRental', function () {
+                Swal.fire({
+                    title: "Xác nhận thêm tháng thuê?",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Xác nhận",
+                    cancelButtonText: "Hủy"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/Landlord/Contract/AddRentalMonth",
+                            type: "POST",
+                            success: function (rs) {
+                                if (rs.success) {
+                                    window.location = "/Landlord/Contract/Detail/@(Functions.ContractId)"
+                                }
+                                else {
+                                    toastr.error('Thêm ngày thuê không thành công');
+                                }
+                            }
+                        });
+                    }
+                });
+            })
+        })
+    </script>
+}

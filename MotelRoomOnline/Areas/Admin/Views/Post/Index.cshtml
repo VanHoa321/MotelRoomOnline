@@ -1,4 +1,5 @@
 ﻿@using MotelRoomOnline.Models
+@using MotelRoomOnline.Utilities
 @model IList<Post>
 
 @{
@@ -76,9 +77,18 @@
                                                 }
                                             </td>
                                             <td>
-                                                <a asp-area="Admin" asp-controller="Post" asp-action="Edit"
-                                                   asp-route-id="@item.PostId" class="btn btn-info btn-sm"
-                                                   title="Sửa bài viết"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                @if (item.AccountId == Functions.account?.AccountId)
+                                                {
+                                                    <a asp-area="Admin" asp-controller="Post" asp-action="Edit"
+                                                       asp-route-id="@item.PostId" class="btn btn-info btn-sm"
+                                                    title="Sửa bài viết"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                }
+                                                else
+                                                {
+                                                    <a asp-area="Admin" asp-controller="Post" asp-action="Detail"
+                                                       asp-route-id="@item.PostId" class="btn btn-primary btn-sm"
+                                                       title="Xem bài viết"><i class="fa-solid fa-eye"></i></a>
+                                                }
                                                 <a class="btn btn-danger btn-sm btn-delete" data-id="@item.PostId"
                                                    title="Xóa bài viết"><i class="fa-solid fa-trash"></i></a>
                                             </td>

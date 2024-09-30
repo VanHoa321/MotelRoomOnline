@@ -19,7 +19,6 @@ namespace MotelRoomOnline.Models
 
         public string? PostImage { get; set; }
 
-
         public int PostCategoryId { get; set; }
 
         public int AccountId { get; set; }

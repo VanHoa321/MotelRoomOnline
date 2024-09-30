@@ -16,7 +16,7 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            if (!Functions.IsLogin())
+            if (!Functions.IsLogin(1))
             {
                 return Redirect("/Login/Index");
             }
@@ -57,6 +57,32 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
         }
 
         public IActionResult Edit(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var item = _context.Posts.Find(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            var list = (from p in _context.PostCategories.Where(p => (p.IsActive == true))
+                        select new SelectListItem()
+                        {
+                            Text = p.PostCategoryName,
+                            Value = p.PostCategoryId.ToString(),
+                        }).ToList();
+            list.Insert(0, new SelectListItem()
+            {
+                Text = "---Chọn---",
+                Value = "0"
+            });
+            ViewBag.list = list;
+            return View(item);
+        }
+
+        public IActionResult Detail(int? id)
         {
             if (id == null || id == 0)
             {
@@ -124,7 +150,7 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
 
         public IActionResult GetData()
         {
-            var items = _context.Posts.OrderByDescending(p => p.PostCategoryId).Take(10).ToList();
+            var items = _context.Posts.OrderByDescending(p => p.PostId).Take(10).ToList();
             var listC = _context.PostCategories.ToList();
             return Json(new { data = items, totalItems = items.Count, listCategory = listC });
         }

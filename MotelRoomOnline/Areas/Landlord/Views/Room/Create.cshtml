@@ -1,0 +1,210 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.Room
+@{
+    ViewData["Title"] = "Thêm mới";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Thêm mới phòng trọ</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý phòng trọ</li>
+                        <li class="breadcrumb-item active">Thêm mới phòng trọ</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <form method="post" id="quickForm" asp-action="Create">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="RoomName">Tên trọ</label>
+                                    <input type="text" asp-for="RoomName" class="form-control" placeholder="Nhập tên phòng trọ">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="WardId">Khu vực</label>
+                                            <select asp-for="WardId" class="form-control select2bs4" asp-items="@(new SelectList(ViewBag.listWard,"Value","Text"))"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="RoomCategoryId">Phân loại phòng</label>
+                                            <select asp-for="RoomCategoryId" class="form-control select2bs4" asp-items="@(new SelectList(ViewBag.listRoomCategories,"Value","Text"))"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="RoomStatusId">Trạng thái</label>
+                                            <select asp-for="RoomStatusId" class="form-control select2bs4" asp-items="@(new SelectList(ViewBag.listRoomStatus,"Value","Text"))"></select>
+                                        </div>
+                                    </div>
+                                </div>                    
+                                <div class="form-group" style="display:flex; margin-top:30px">
+                                    <button class="btn btn-success mr-2" type="button" onclick="openDialog()">Chọn</button>
+                                    <input type="text" class="form-control" asp-for="Image" id="file_input" />
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="Acreage">Diện tích (m<sup>2</sup>)</label>
+                                            <input type="number" asp-for="Acreage" class="form-control" placeholder="Nhập diện tích phòng">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="PriceRoom">Giá phòng (Vnđ)</label>
+                                            <input type="number" asp-for="PriceRoom" class="form-control" placeholder="Nhập giá thuê phòng">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label asp-for="MaxPeople">Người ở tối đa</label>
+                                            <input type="number" asp-for="MaxPeople" class="form-control" placeholder="Nhập số người ở tối đa">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Address">Địa chỉ</label>
+                                    <input type="text" asp-for="Address" class="form-control" placeholder="Nhập địa chỉ">
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Abstract">Mô tả ngắn</label>
+                                    <textarea class="form-control mb-3" asp-for="Abstract" placeholder="Nhập mô tả thêm" style=" height: 100px"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Content">Nội dung</label>
+                                    <textarea class="form-control mb-3" asp-for="Content" value="Nhập nội dung bài viết" style=" height: 100px"></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="CreatedDate">Ngày tạo</label>
+                                            <input type="text" asp-for="CreatedDate" class="form-control" value="@Functions.getCurrenDate()" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="CreatedBy">Người tạo</label>
+                                            <input type="text" asp-for="CreatedBy" class="form-control" value="@Functions.account?.FullName" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a asp-controller="Room" asp-action="Index" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" title="Lưu"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+@{
+    var summerNote = new MotelRoomOnline.Areas.Landlord.Models.SummerNote("#Content");
+    <partial name="_SummerNote" model="summerNote" />
+}
+@section Scripts{
+    <script src="~/admin/assets/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/admin/assets/plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="~/admin/assets/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/admin/assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    RoomName: {
+                        required: true,
+                        minlength: 10,
+                    },
+                    Acreage: {
+                        required: true,
+                        min: 10
+                    },
+                    PriceRoom: {
+                        required: true,
+                        min: 100000
+                    },
+                    MaxPeople: {
+                        required: true,
+                        min: 1
+                    },
+                    Address: {
+                        required: true,
+                    },
+                    Abstract: {
+                        required: true,
+                        minlength: 1,
+                    },
+                    Content: {
+                        required: true,
+                        minlength: 1,
+                    }
+                },
+                messages: {
+                    RoomName: {
+                        required: "Tên phòng trọ không được để trống",
+                        minlength: "Tên phòng trọ phải có ít nhất {0} ký tự!"
+                    },
+                    Acreage: {
+                        required: "Diện tích phòng trọ không được để trống",
+                        min: "Diện tích phòng trọ phải có lớn hơn {0}"
+                    },
+                    PriceRoom: {
+                        required: "Giá thuê phòng trọ không được để trống",
+                        min: "Giá thuê phòng trọ phải có lớn hơn {0}"
+                    },
+                    MaxPeople: {
+                        required: "Tối đa người ở không được để trống",
+                        min: "Tối đa người ở phải có lớn hơn {0}"
+                    },
+                    Address: {
+                        required: "Địa chỉ phòng trọ không được để trống"
+                    },
+                    Abstract: {
+                        required: "Mô tải ngắn bài viết không được để trống",
+                        minlength: "Mô tải ngắn bài viết phải có ít nhất {0} ký tự!"
+                    },
+                    Content: {
+                        required: "Nội dung bài viết không được để trống",
+                        minlength: "Nội dung bài viết phải có ít nhất {0} ký tự!"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('.select2').select2()
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+
+        });
+    </script>
+}

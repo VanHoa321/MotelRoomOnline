@@ -1,0 +1,174 @@
+﻿@using MotelRoomOnline.Models
+@model IList<Customer>
+
+@{
+    ViewData["Title"] = "Quản lý khách hàng";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Danh sách khách hàng của tôi</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý khách hàng</li>
+                        <li class="breadcrumb-item active">Danh sách khách hàng</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <a type="button" class="btn btn-success" asp-area="Landlord" asp-controller="Customer" asp-action="Create">
+                                    <i class="fa-solid fa-plus" title="Thêm mới khách hàng"></i>
+                                </a>
+                                <a href="#" type="button" id="loadData" class="btn btn-secondary">
+                                    <i class="fa-solid fa-rotate-right" style="color:white" title="Tải lại dữ liệu"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table id="example-table" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Họ tên</th>
+                                        <th>CCCD</th>
+                                        <th>Ngày sinh</th>
+                                        <th>SĐT</th>
+                                        <th>Chức năng</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="showdata">
+                                    @{
+                                        int i = 1;
+                                    }
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr id="tr_@item.CustomerId">
+                                            <td>@(i++)</td>
+                                            <td><img src="@item.Avatar" style="width:60px; height:60px" /></td>
+                                            <td>@item.FullName</td>
+                                            <td>@item.Code</td>
+                                            <td>@item.DOB.Value.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.Phone</td>                                           
+                                            <td>
+                                                <a asp-area="Landlord" asp-controller="Customer" asp-action="Edit"
+                                                   asp-route-id="@item.CustomerId" class="btn btn-info btn-sm"
+                                                   title="Sửa thông tin khách hàng"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                <a class="btn btn-danger btn-sm btn-delete" data-id="@item.CustomerId"
+                                                   title="Xóa khách hàng"><i class="fa-solid fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            function formatDate(date) {
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+
+            function LoadData() {
+                $.ajax({
+                    url: "/Landlord/Customer/GetData",
+                    type: "GET",
+                    success: function (res) {
+                        if (res.totalItems > 0) {
+                            var items = res.data;
+                            var str = "";
+                            for (let i = 0; i < res.totalItems; i++) {
+                                var item = items[i];                                
+                                str += `<tr id="tr_${item.customerId}">
+                                    <td>${i + 1}</td>
+                                    <td><img src="${item.avatar}" style="width:60px; height:60px" /></td>
+                                    <td>${item.fullName}</td>
+                                    <td>${item.code}</td>
+                                    <td>${formatDate(new Date(item.dob))}</td>
+                                    <td>${item.phone}</td>
+                                    <td>
+                                       <a href="/Landlord/Customer/Edit/${item.customerId}" class="btn btn-info btn-sm" title="Sửa thông tin khách hàng">
+                                          <i class="fa-solid fa-pen-to-square"></i>
+                                       </a>
+                                       <a class="btn btn-danger btn-sm btn-delete" data-id="${item.customerId}" title="Xóa khách hàng">
+                                          <i class="fa-solid fa-trash"></i>
+                                       </a>
+                                     </td>
+                                </tr>`;
+                            }
+                            $('#showdata').html(str);
+                            toastr.success('Cập nhật dữ liệu thành công');
+                        } else {
+                            $('#showdata').html("<tr><td colspan='7' class='text-center'>Không có dữ liệu</td></tr>");
+                        }
+                    },
+                    error: function (err) {
+                        console.error("Lỗi khi gọi LoadData:", err);
+                    }
+                });
+            }
+
+            $('body').on('click', '.btn-delete', function () {
+                _id = $(this).data("id");
+                Swal.fire({
+                    title: "Xác nhận xóa khách hàng?",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Xóa",
+                    cancelButtonText: "Hủy"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/Landlord/Customer/Delete",
+                            type: "POST",
+                            data: { id: _id },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    toastr.success('Xóa khách hàng thành công');
+                                    LoadData();
+                                }
+                                else {
+                                    toastr.error('Khách hàng từng thuê trọ không thể xóa');
+                                }
+                            }
+                        });
+                    }
+                });
+            })
+
+            $('#loadData').click(function (e) {
+                e.preventDefault();
+                LoadData();
+            });
+        })
+    </script>
+}
+
+

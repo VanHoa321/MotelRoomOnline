@@ -16,7 +16,7 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            if (!Functions.IsLogin())
+            if (!Functions.IsLogin(1))
             {
                 return Redirect("/Login/Index");
             }

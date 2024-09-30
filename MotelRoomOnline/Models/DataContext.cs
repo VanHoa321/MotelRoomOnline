@@ -19,5 +19,17 @@ namespace MotelRoomOnline.Models
         public DbSet<Service> Services { get; set; }
         public DbSet<Criteria> Criterias { get; set; }
         public DbSet<RoomStatus> RoomStatuses { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<RoomCategories> RoomCategories { get; set; }
+        public DbSet<District> Districts { get; set; }
+        public DbSet<Ward> Wards { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<RoomCriteria> RoomCriterias { get; set; }
+        public DbSet<RoomService> RoomServices { get; set; }
+        public DbSet<RoomImage> RoomImages { get; set; }
+        public DbSet<Contract> Contracts { get; set; }
+        public DbSet<RentalMonth> RentalMonths { get; set; }
+        public DbSet<ContractDetail> ContractDetails { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
     }
 }

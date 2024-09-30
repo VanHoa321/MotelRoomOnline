@@ -7,6 +7,9 @@ namespace MotelRoomOnline.Utilities
     public class Functions
     {
         public static Account? account { get; set; }
+        public static long RoomId { get; set; }
+        public static long ContractId { get; set; }
+        public static long DetailId { get; set; }
 
         public static string message = string.Empty;
 
@@ -50,9 +53,9 @@ namespace MotelRoomOnline.Utilities
             return str;
         }
 
-        public static bool IsLogin()
+        public static bool IsLogin(int id)
         {
-            if (Functions.account == null)
+            if (Functions.account == null || Functions.account?.RoleID != id)
             {
                 return false;
             }

@@ -1,0 +1,165 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.Customer
+@{
+    ViewData["Title"] = "Thêm mới";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Thêm mới khách hàng</h4>                    
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý khách hàng</li>
+                        <li class="breadcrumb-item active">Thêm mới khách hàng</li>
+                    </ol>
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(Functions.message))
+            {
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <i class="icon fas fa-exclamation-triangle"></i>@Functions.message
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <form method="post" id="quickForm" asp-action="Create">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Code">CCCD</label>
+                                            <input type="text" asp-for="Code" class="form-control" placeholder="Nhập số căn cước công dân">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="FullName">FullName</label>
+                                            <input type="text" asp-for="FullName" class="form-control" placeholder="Nhập tên khách hàng">
+                                        </div>
+                                    </div>
+                                </div>                            
+                                <div class="form-group" style="display:flex; margin-top:25px">
+                                    <button class="btn btn-success mr-2" type="button" onclick="openDialog()">Chọn</button>
+                                    <input type="text" class="form-control" asp-for="Avatar" id="file_input" />
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="DOB">Ngày sinh</label>
+                                            <input type="date" asp-for="DOB" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <label asp-for="Gender">Giới tính</label>
+                                                <select asp-for="Gender" class="form-control select2bs4" style="width: 100%">
+                                                    <option value="true" selected>Nam</option>
+                                                    <option value="false">Nữ</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Phone">Phone</label>
+                                    <input type="text" asp-for="Phone" class="form-control" placeholder="Nhập số điện thoại">
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Description">Description</label>
+                                    <textarea class="form-control mb-3" asp-for="Description" placeholder="Nhập mô tả thêm" style=" height: 100px"></textarea>
+                                </div>
+                                
+                            </div>
+                            <div class="card-footer">
+                                <a asp-controller="Customer" asp-action="Index" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" title="Lưu"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+@{
+    var summerNote = new MotelRoomOnline.Areas.Landlord.Models.SummerNote("#Content");
+    <partial name="_SummerNote" model="summerNote" />
+}
+@section Scripts{
+    <script src="~/admin/assets/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/admin/assets/plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="~/admin/assets/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/admin/assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    Code: {
+                        required: true,
+                        minlength: 10,
+                    },
+                    FullName: {
+                        required: true,
+                        minlength: 5
+                    },
+                    DOB: {
+                        required: true
+                    },
+                    Phone: {
+                        required: true,
+                        minlength: 10
+                    }
+                },
+                messages: {
+                    Code: {
+                        required: "Mã CCCD không được để trống",
+                        minlength: "Mã CCCD phải có ít nhất {0} ký tự",
+                    },
+                    FullName: {
+                        required: "Tên khách hàng không được để trống",
+                        minlength: "Tên khách hàng phải có ít nhất {0} ký tự"
+                    },
+                    DOB: {
+                        required: "Ngày sinh không được để trống"
+                    },
+                    Phone: {
+                        required: "Số điện thoại không được để trống",
+                        minlength: "Số điện thoại phải có ít nhất {0} ký tự"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('.select2').select2()
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+
+        });
+    </script>
+}
