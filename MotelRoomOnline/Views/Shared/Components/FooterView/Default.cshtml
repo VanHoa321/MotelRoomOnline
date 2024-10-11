@@ -1,0 +1,45 @@
+﻿@model IEnumerable<MotelRoomOnline.Models.Post>
+
+<style>
+    .entry-title {
+        display: -webkit-box;
+        -webkit-line-clamp: 1; /* Số dòng hiển thị */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .abstract {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-height: 43px;
+        line-height: 17px;
+    }
+</style>
+
+<div class="single-footer">
+    <h4>Tin tức mới</h4>
+    <div class="footer-title-line"></div>
+    <ul class="footer-blog">
+        @foreach (var items in Model)
+        {
+            var sUrl = $"/bai-viet/{items.Alias}-{items.PostId}.html";
+            <li>
+                <div class="col-md-3 col-sm-4 col-xs-4 blg-thumb p0">
+                    <a href="@sUrl">
+                        <img src="@items.PostImage" style="width:80px;height:60px">
+                    </a>
+                    <span class="blg-date">@items.CreatedDate.Value.ToString("dd/MM/yyyy")</span>
+                </div>
+                <div class="col-md-8 col-sm-8 col-xs-8 blg-entry">
+                    <h6 class="entry-title"><a href="@sUrl">@items.PostTitle</a></h6>
+                    <p class="abstract" style="padding: 8px 2px;">@items.Abstract</p>
+                </div>
+            </li>
+
+        }
+    </ul>
+</div>

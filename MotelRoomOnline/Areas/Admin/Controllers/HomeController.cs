@@ -19,7 +19,7 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
         {
             Functions.account = null;
             Functions.message = string.Empty;
-            return RedirectToAction("Index", "Home");
+            return Redirect("/Home");
         }  
     }
 }

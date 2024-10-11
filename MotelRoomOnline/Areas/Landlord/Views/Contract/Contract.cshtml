@@ -1,0 +1,87 @@
+﻿@using MotelRoomOnline.Models
+@model IList<Contract>
+
+@{
+    ViewData["Title"] = "Quản lý hợp đồng";
+    List<Room> listRoom = ViewBag.listRoom;
+    List<Customer> listCustomer = ViewBag.listCustomer;
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Danh sách hợp đồng thuê trọ</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý hợp đồng</li>
+                        <li class="breadcrumb-item active">Danh sách hợp đồng thuê trọ</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h4>Danh sách hợp đồng thuê trọ đã kết thúc</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table id="example-table" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Tên phòng</th>
+                                        <th>Khách thuê</th>
+                                        <th>SĐT</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Trạng thái</th>
+                                        <th>Chức năng</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="showdata">
+                                    @{
+                                        int i = 1;
+                                    }
+                                    @foreach (var item in Model)
+                                    {
+                                        var room = listRoom.FirstOrDefault(r => r.RoomId == item.RoomId);
+                                        var customer = listCustomer.FirstOrDefault(r => r.CustomerId == item.CustomerId);
+                                        <tr id="tr_@item.ContractId">
+                                            <td>@(i++)</td>
+                                            <td><img src="@room?.Image" style="width:60px; height:60px" /></td>
+                                            <td>@room?.RoomName</td>
+                                            <td>@customer?.FullName</td>
+                                            <td>@customer?.Phone</td>
+                                            <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                            <td class="text-info">@(item.Status == 1 ? "Đang thuê" : "Đã kết thúc")</td>
+                                            <td>
+                                                <a asp-area="Landlord" asp-controller="Contract" asp-action="ContractView"
+                                                   asp-route-id="@item.ContractId" class="btn btn-info btn-sm"
+                                                   title="Xem thông tin hợp đồng"><i class="fa-solid fa-eye"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+
+

@@ -31,5 +31,9 @@ namespace MotelRoomOnline.Models
         public DbSet<RentalMonth> RentalMonths { get; set; }
         public DbSet<ContractDetail> ContractDetails { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<Slider> Sliders { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
+        public DbSet<PostComment> PostComments { get; set; }
     }
 }

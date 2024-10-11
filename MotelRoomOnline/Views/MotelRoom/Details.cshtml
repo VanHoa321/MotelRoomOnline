@@ -1,0 +1,265 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.Room
+
+@{
+    ViewData["Title"] = "Chi tiết";
+    Account account = ViewBag.Account;
+    List<RoomImage> imgList = ViewBag.Image;
+}
+
+<div class="content-area single-property" style="background-color: #FCFCFC;">
+    &nbsp;
+    <div class="container">
+        <div class="clearfix padding-top-40">
+            <div class="col-md-8 single-property-content prp-style-2">
+                <div class="">
+                    <div class="row">
+                        <div class="light-slide-item">
+                            <div class="clearfix">
+                                <div class="favorite-and-print">
+                                    <a class="add-to-fav" href="#login-modal" data-toggle="modal">
+                                        <i class="fa fa-star-o"></i>
+                                    </a>
+                                </div>
+                                <ul id="image-gallery" class="gallery list-unstyled cS-hidden">
+                                    @foreach(var items in imgList)
+                                    {
+                                        <li data-thumb="@items.Image">
+                                            <img src="@items.Image"/>
+                                        </li>
+                                    }                                    
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="single-property-wrapper">
+                        <div class="section additional-details">
+                            <h4 class="s-property-title">Thông tin</h4>
+                            <ul class="additional-details-list clearfix">
+                                <li>
+                                    <span class="col-xs-6 col-sm-4 col-md-4 add-d-title">Địa chỉ</span>
+                                    <span class="col-xs-6 col-sm-8 col-md-8 add-d-entry">@Model.Address</span>
+                                </li>
+                                <li>
+                                    <span class="col-xs-6 col-sm-4 col-md-4 add-d-title">Diện tích</span>
+                                    <span class="col-xs-6 col-sm-8 col-md-8 add-d-entry">@Model.Acreage</span>
+                                </li>
+                                <li>
+                                    <span class="col-xs-6 col-sm-4 col-md-4 add-d-title">Giá phòng</span>
+                                    <span class="col-xs-6 col-sm-8 col-md-8 add-d-entry">@Functions.ToVnd(Model.PriceRoom)<sup>đ</sup></span>
+                                </li>
+                                <li>
+                                    <span class="col-xs-6 col-sm-4 col-md-4 add-d-title">Số người ở tối đa</span>
+                                    <span class="col-xs-6 col-sm-8 col-md-8 add-d-entry">@Model.MaxPeople</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="section additional-details">
+                            <h4 class="s-property-title">Chi tiết</h4>
+                            <p>@Html.Raw(Model.Content)</p>
+                        </div>                        
+                    </div>
+                </div>
+
+                <div class="similar-post-section padding-top-40">
+                    <div id="prop-smlr-slide_0">
+                        <div class="box-two proerty-item">
+                            <div class="item-thumb">
+                                <a href="property-1.html"><img src="~/web/assets/img/similar/property-1.jpg"></a>
+                            </div>
+                            <div class="item-entry overflow">
+                                <h5><a href="property-1.html"> Super nice villa </a></h5>
+                                <div class="dot-hr"></div>
+                                <span class="pull-left"><b> Area :</b> 120m </span>
+                                <span class="proerty-price pull-right"> $ 300,000</span>
+                            </div>
+                        </div>
+                        <div class="box-two proerty-item">
+                            <div class="item-thumb">
+                                <a href="property-1.html"><img src="~/web/assets/img/similar/property-2.jpg"></a>
+                            </div>
+                            <div class="item-entry overflow">
+                                <h5><a href="property-1.html"> Super nice villa </a></h5>
+                                <div class="dot-hr"></div>
+                                <span class="pull-left"><b> Area :</b> 120m </span>
+                                <span class="proerty-price pull-right"> $ 300,000</span>
+                            </div>
+                        </div>
+                        <div class="box-two proerty-item">
+                            <div class="item-thumb">
+                                <a href="property-1.html"><img src="~/web/assets/img/similar/property-3.jpg"></a>
+                            </div>
+                            <div class="item-entry overflow">
+                                <h5><a href="property-1.html"> Super nice villa </a></h5>
+                                <div class="dot-hr"></div>
+                                <span class="pull-left"><b> Area :</b> 120m </span>
+                                <span class="proerty-price pull-right"> $ 300,000</span>
+                            </div>
+                        </div>
+                        <div class="box-two proerty-item">
+                            <div class="item-thumb">
+                                <a href="property-1.html"><img src="~/web/assets/img/similar/property-1.jpg"></a>
+                            </div>
+                            <div class="item-entry overflow">
+                                <h5><a href="property-1.html"> Super nice villa </a></h5>
+                                <div class="dot-hr"></div>
+                                <span class="pull-left"><b> Area :</b> 120m </span>
+                                <span class="proerty-price pull-right"> $ 300,000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 p0">
+                <aside class="sidebar sidebar-property blog-asside-right property-style2">
+                    <div class="dealer-widget">
+                        <div class="dealer-content">
+                            <div class="inner-wrapper">
+                                <div class="single-property-header">
+                                    <h3 class="">@Model.RoomName</h3>
+                                    <span class="property-price">@Functions.ToVnd(Model.PriceRoom)<sup>đ</sup></span>
+                                </div>
+                                <div class="property-meta entry-meta clearfix ">
+                                    <div class="s-property-content">
+                                        <p>@Model.Abstract</p>
+                                    </div>
+                                </div>
+                                <div class="dealer-section-space">
+                                    <span>Thông tin chủ trọ</span>
+                                </div>
+                                <div class="clear">
+                                    <div class="col-xs-3 col-sm-3 dealer-face">
+                                        <a href="">
+                                            <img src="@account.Avatar" class="img-circle">
+                                        </a>
+                                    </div>
+                                    <div class="col-xs-9 col-sm-9 ">
+                                        <h4 class="dealer-name">
+                                            <a href="">@account.FullName</a><br />
+                                            <span>@account.AccountName</span>
+                                        </h4>
+                                        <div class="dealer-social-media">
+                                            <a class="twitter" target="_blank" href="">
+                                                <i class="fa fa-twitter"></i>
+                                            </a>
+                                            <a class="facebook" target="_blank" href="">
+                                                <i class="fa fa-facebook"></i>
+                                            </a>
+                                            <a class="gplus" target="_blank" href="">
+                                                <i class="fa fa-google-plus"></i>
+                                            </a>
+                                            <a class="linkedin" target="_blank" href="">
+                                                <i class="fa fa-linkedin"></i>
+                                            </a>
+                                            <a class="instagram" target="_blank" href="">
+                                                <i class="fa fa-instagram"></i>
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="clear">
+                                    <ul class="dealer-contacts">
+                                        <li><i class="pe-7s-map-marker strong"> </i> @account.Address</li>
+                                        <li><i class="pe-7s-mail strong"> </i> @account.Email</li>
+                                        <li><i class="pe-7s-call strong"> </i> @account.Phone</li>
+                                        <li><i class="pe-7s-call strong"> </i> @account.DOB.Value.ToString("dd/MM/yyyy")</li>
+                                    </ul>                                    
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default sidebar-menu wow fadeInRight animated">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Tìm kiếm trọ</h3>
+                        </div>
+                        <div class="panel-body search-widget">
+                            <form action="" class=" form-inline">
+                                <fieldset>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <input type="text" class="form-control" placeholder="Nhập thông tin...">
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <select id="lunchBegins" class="selectpicker" data-live-search="true" data-live-search-style="begins">
+                                                <option>Chọn khu vực</option>
+                                                <option>New york, CA</option>
+                                                <option>Paris</option>
+                                                <option>Casablanca</option>
+                                                <option>Tokyo</option>
+                                                <option>Marraekch</option>
+                                                <option>kyoto , shibua</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset class="padding-5">
+                                    <div class="row">
+                                        <div class="col-xs-12" style="margin-bottom:10px">
+                                            <div class="checkbox">
+                                                <label> <input type="checkbox"> Fire Place</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-12" style="margin-bottom:10px">
+                                            <div class="checkbox">
+                                                <label> <input type="checkbox"> Dual Sinks</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12" style="margin-bottom:10px">
+                                            <div class="checkbox">
+                                                <label>  <input type="checkbox"> Jog Path </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12" style="margin-bottom:10px">
+                                            <div class="checkbox">
+                                                <label>  <input type="checkbox"> 26' Ceilings </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <input class="button btn largesearch-btn" value="Tìm" type="submit">
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+
+            $('#image-gallery').lightSlider({
+                gallery: true,
+                item: 1,
+                thumbItem: 9,
+                slideMargin: 0,
+                speed: 500,
+                auto: true,
+                loop: true,
+                onSliderLoad: function () {
+                    $('#image-gallery').removeClass('cS-hidden');
+                }
+            });
+        });
+    </script>
+}

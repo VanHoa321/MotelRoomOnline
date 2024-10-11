@@ -34,6 +34,10 @@ namespace MotelRoomOnline.Models
 
         public string? Address { get; set; }
 
+        public long ViewCount { get; set; }
+
+        public string? Alias { get; set; }
+
         public DateTime? CreatedDate { get; set; }
 
         public string? CreatedBy { get; set; }

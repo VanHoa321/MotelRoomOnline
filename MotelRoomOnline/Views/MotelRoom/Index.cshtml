@@ -1,0 +1,153 @@
+﻿@using MotelRoomOnline.Utilities
+@using MotelRoomOnline.Models.ViewModels
+@model RoomListViewModel
+
+@{
+    ViewData["Title"] = "Phòng trọ";
+    List<Account> accountList = ViewBag.Account;
+    int currentPage = Model.PagingInfo.CurrentPage;
+}
+
+<style>
+    .text-view {
+        display: block;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
+<div class="properties-area recent-property" style="background-color: #FFF;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 p0 padding-top-40">
+                <div class="blog-asside-right pr0">
+                    <div class="panel panel-default sidebar-menu wow fadeInRight animated">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Tìm kiếm trọ</h3>
+                        </div>
+                        <div class="panel-body search-widget">
+                            <form action="" class=" form-inline">
+                                <fieldset>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <input type="text" class="form-control" placeholder="Nhập thông tin...">
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <select id="lunchBegins" class="selectpicker" data-live-search="true" data-live-search-style="begins">
+                                                <option>Chọn khu vực</option>
+                                                <option>New york, CA</option>
+                                                <option>Paris</option>
+                                                <option>Casablanca</option>
+                                                <option>Tokyo</option>
+                                                <option>Marraekch</option>
+                                                <option>kyoto , shibua</option>
+                                            </select>
+                                        </div>                                       
+                                    </div>
+                                </fieldset>
+
+                                <fieldset class="padding-5">
+                                    <div class="row">
+                                        <div class="col-xs-12" style="margin-bottom:10px">
+                                            <div class="checkbox">
+                                                <label> <input type="checkbox"> Fire Place</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-12" style="margin-bottom:10px">
+                                            <div class="checkbox">
+                                                <label> <input type="checkbox"> Dual Sinks</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12" style="margin-bottom:10px">
+                                            <div class="checkbox">
+                                                <label>  <input type="checkbox"> Jog Path </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12" style="margin-bottom:10px">
+                                            <div class="checkbox">
+                                                <label>  <input type="checkbox"> 26' Ceilings </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <input class="button btn largesearch-btn" value="Tìm" type="submit">
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                    @await Component.InvokeAsync("RoomNew")
+                </div>
+            </div>
+
+            <div class="col-md-9  pr0 padding-top-40 properties-page" style="margin-top:65px">
+                <div class="col-md-12 clear">
+                    <div id="list-type" class="proerty-th">
+                        @foreach(var items in Model.Rooms)
+                        {
+                            var sUrl = $"/phong-tro/{items.Alias}-{items.RoomId}.html";
+                            <div class="col-sm-6 col-md-4 p0">
+                                <div class="box-two proerty-item">
+                                    <div class="item-thumb">
+                                        <a href="@sUrl"><img src="@items.Image" style="height:100px"></a>
+                                    </div>
+                                    <div class="item-entry overflow">
+                                        <h6 class="text-view"><a href="@sUrl">@items.RoomName</a></h6>
+                                        <div class="dot-hr"></div>
+                                        <span class="pull-left">
+                                            <b><i class="bi bi-arrows-move" style="font-size: 20px; color: #FDC600"></i> @items.Acreage m<sup>2</sup></b>
+                                        </span>
+                                        <span class="proerty-price pull-right">
+                                            <i class="bi bi-currency-dollar"></i> @Functions.ToVnd(items.PriceRoom)<sup>đ</sup>
+                                        </span>
+                                        <div class="property-icon">
+                                            <span class="pull-left">
+                                                <i class="bi bi-eye" style="font-size: 20px; color: #FDC600"></i><b>(@items.ViewCount)</b>
+                                            </span>
+                                            <span class="pull-right">
+                                                <i class="bi bi-people" style="font-size: 20px; color: #FDC600"></i><b>(@items.MaxPeople)</b>
+                                            </span>                          
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }             
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <div class="pagination">
+                            <ul>
+                                <li><a href="/phong-tro/?page=@(Math.Max(currentPage - 1, 1))">Trước</a></li>
+                                @for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
+                                {
+                                    <li><a href="/phong-tro/?page=@(i)">@i</a></li>
+                                    if (i == Model.PagingInfo.TotalPages)
+                                    {
+                                        currentPage = i - 1;
+                                    }
+                                }
+                                <li><a href="/phong-tro/?page=@(currentPage + 1)">Sau</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

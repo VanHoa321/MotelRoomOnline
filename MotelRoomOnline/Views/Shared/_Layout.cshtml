@@ -1,49 +1,107 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html class="no-js">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MotelRoomOnline.styles.css" asp-append-version="true" />
+    <meta name="description" content="GARO is a real-estate template">
+    <meta name="author" content="Kimarotec">
+    <meta name="keyword" content="html5, css, bootstrap, property, real-estate theme , bootstrap template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700,800' rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="~/web/assets/css/normalize.css">
+    <link rel="stylesheet" href="~/web/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/web/assets/css/fontello.css">
+    <link href="~/web/assets/fonts/icon-7-stroke/css/pe-icon-7-stroke.css" rel="stylesheet">
+    <link href="~/web/assets/fonts/icon-7-stroke/css/helper.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="~/web/assets/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="~/web/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/web/assets/css/icheck.min_all.css">
+    <link rel="stylesheet" href="~/web/assets/css/price-range.css">
+    <link rel="stylesheet" href="~/web/assets/css/owl.carousel.css">
+    <link rel="stylesheet" href="~/web/assets/css/owl.theme.css">
+    <link rel="stylesheet" href="~/web/assets/css/owl.transitions.css">
+    <link rel="stylesheet" href="~/web/assets/css/lightslider.min.css">
+    <link rel="stylesheet" href="~/web/assets/css/jquery.slitslider.css">
+    <link rel="stylesheet" href="~/web/assets/css/style.css">
+    <link rel="stylesheet" href="~/web/assets/css/responsive.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/admin/assets/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/admin/assets/plugins/toastr/toastr.css" rel="stylesheet" />
+    <style>
+        #preloader {
+            z-index: 9999;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MotelRoomOnline</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <div id="preloader">
+        <div id="status">&nbsp;</div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - MotelRoomOnline - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @await Html.PartialAsync("_PartialHeader")
+
+    @await Component.InvokeAsync("Slider")
+
+    @RenderBody()
+
+    @await Html.PartialAsync("_PartialFooter")
+
+    <script src="~/web/assets/js/jquery-1.10.2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/web/assets/js/modernizr-2.6.2.min.js"></script>
+    <script src="~/web/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/web/assets/js/bootstrap-select.min.js"></script>
+    <script src="~/web/assets/js/bootstrap-hover-dropdown.js"></script>
+    <script src="~/web/assets/js/easypiechart.min.js"></script>
+    <script src="~/web/assets/js/jquery.easypiechart.min.js"></script>
+    <script src="~/web/assets/js/owl.carousel.min.js"></script>
+    <script src="~/web/assets/js/wow.js"></script>
+    <script src="~/web/assets/js/icheck.min.js"></script>
+    <script src="~/web/assets/js/price-range.js"></script>
+    <script src="~/web/assets/js/jquery.ba-cond.min.js"></script>
+    <script src="~/web/assets/js/jquery.slitslider.js"></script>
+    <script src="~/web/assets/js/main.js"></script>
+    <script type="text/javascript" src="~/web/assets/js/lightslider.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/admin/assets/plugins/toastr/toastr.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"></script>
+    @RenderSection("Scripts", required: false)
+    <script type="text/javascript">
+        $(function () {
+            var Page = (function () {
+                var $nav = $('#nav-dots > span'),
+                    slitslider = $('#slider').slitslider({
+                        onBeforeChange: function (slide, pos) {
+                            $nav.removeClass('nav-dot-current');
+                            $nav.eq(pos).addClass('nav-dot-current');
+
+                        }
+                    }),
+                    init = function () {
+                        initEvents();
+                    },
+                    initEvents = function () {
+                        $nav.each(function (i) {
+                            $(this).on('click', function (event) {
+                                var $dot = $(this);
+                                if (!slitslider.isActive()) {
+                                    $nav.removeClass('nav-dot-current');
+                                    $dot.addClass('nav-dot-current');
+                                }
+                                slitslider.jump(i + 1);
+                                return false;
+                            });
+                        });
+                    };
+                return { init: init };
+            })();
+            Page.init();
+        });
+    </script>
 </body>
 </html>

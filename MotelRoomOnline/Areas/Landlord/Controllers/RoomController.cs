@@ -75,6 +75,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
             if (ModelState.IsValid)
             {
                 create.AccountId = Functions.account.AccountId;
+                create.Alias = Functions.TitleSlugGenerationAlias(create.RoomName);
                 _context.Rooms.Add(create);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
@@ -142,6 +143,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
             if (ModelState.IsValid)
             {
                 edit.AccountId = Functions.account.AccountId;
+                edit.Alias = Functions.TitleSlugGenerationAlias(edit.RoomName);
                 _context.Rooms.Update(edit);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
@@ -153,6 +155,11 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
         public IActionResult Delete(int? id)
         {
             var item = _context.Rooms.Find(id);
+            var isRoomRented = _context.Contracts.Any(c => c.RoomId == item.RoomId);
+            if (isRoomRented)
+            {
+                return Json(new { success = false });
+            }
             if (item != null)
             {
                 _context.Rooms.Remove(item);

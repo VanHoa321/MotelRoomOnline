@@ -101,9 +101,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <a class="btn btn-success addRental">
-                                <i class="fa-solid fa-plus" title="Thêm tháng thuê"></i>
-                            </a>
+                            <div class="form-group">
+                                <a class="btn btn-success addRental">
+                                    <i class="fa-solid fa-plus" title="Thêm tháng thuê"></i>
+                                </a>
+                                <a class="btn btn-primary checkOutContract">
+                                    <i class="fa-solid fa-money-check" title="Trả phòng"></i>
+                                </a>
+                            </div>
                             @await Component.InvokeAsync("RentalMonth")
                         </div>
                         <div class="card-footer">
@@ -151,6 +156,37 @@
                     }
                 });
             })
+
+            $('body').on('click', '.checkOutContract', function () {
+                Swal.fire({
+                    title: "Xác nhận trả phòng thuê?",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Xác nhận",
+                    cancelButtonText: "Hủy"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/Landlord/Contract/CheckOut",
+                            type: "POST",
+                            success: function (rs) {
+                                if (rs.success) {
+                                    toastr.success(rs.message);
+                                    setTimeout(function () {
+                                        window.location = "/Landlord/Contract/ContractView/@(Functions.ContractId)";
+                                    }, 2000);
+                                } else {
+                                    toastr.error(rs.message);
+                                }
+                            },
+                            error: function () {
+                                toastr.error("Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau");
+                            }
+                        });
+                    }
+                });
+            });
         })
     </script>
 }

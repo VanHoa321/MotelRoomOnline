@@ -1,0 +1,251 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.Post
+
+@{
+    ViewData["Title"] = "Chi tiết";
+    List<Account> accList = ViewBag.Account;
+    List<PostComment> cmList = ViewBag.postComment;
+}
+
+<div class="content-area blog-page padding-top-40" style="background-color: #FCFCFC; padding-bottom: 55px;">
+    <div class="container">
+        <div class="row">
+            <div class="blog-asside-right col-md-3" style="margin-top:80px">         
+                <div class="panel panel-default sidebar-menu wow  fadeInRight animated">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Tìm kiếm</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form role="search">
+                            <div class="input-group">
+                                <input class="form-control" placeholder="Nhập thông tin..." type="text">
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-smal">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                @await Component.InvokeAsync("PostNew")
+
+                @await Component.InvokeAsync("RoomNew")
+
+                <div class="panel sidebar-menu wow  fadeInRight animated">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Tags</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="checkbox">
+                                    <label> <input type="checkbox"> Fire Place</label>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <div class="checkbox">
+                                    <label> <input type="checkbox"> Dual Sinks</label>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="checkbox">
+                                    <label>  <input type="checkbox"> Jog Path </label>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="checkbox">
+                                    <label>  <input type="checkbox"> 26' Ceilings </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="blog-lst col-md-9 p0">
+                <section id="id-100" class="post single">
+                    <div class="post-header single">
+                        <div class="">
+                            <h2 class="wow fadeInLeft animated">@Model.PostTitle</h2>
+                            <div class="title-line wow fadeInRight animated"></div>
+                        </div>
+                        <div class="row wow fadeInRight animated">
+                            <div class="col-sm-6">
+                                <p class="author-category">
+                                    Đăng bởi <a href="#">@Model.CreatedBy</a>
+                                </p>
+                            </div>
+                            <div class="col-sm-6 right">
+                                <p class="date-comments">
+                                    <a href="#"><i class="fa fa-calendar-o"></i> @Model.CreatedDate.Value.ToString("dd/MM/yyyy")</a>
+                                    <a href="#"><i class="fa fa-comment-o"></i> @cmList.Count Bình luận</a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="image wow fadeInRight animated">
+                            <img src="@Model.PostImage" class="img-responsive" alt="Example blog post alt" style="height:600px">
+                        </div>
+                    </div>
+
+                    <div id="post-content" class="post-body single wow fadeInLeft animated">
+                        <p>
+                             @Model.Abstract
+                        </p>
+
+                        <p>
+                            @Html.Raw(Model.Content)
+                        </p>
+
+                    </div>
+                </section>
+                <section class="about-autor">
+                </section>
+                <section id="comments" class="comments wow fadeInRight animated">
+                    <h4 class="text-uppercase wow fadeInLeft animated" style="margin-bottom:45px" id="comment-count">@cmList.Count Bình luận</h4>
+                    <div class="comment-list">
+                        @foreach (var items in cmList)
+                        {
+                            var account = accList.FirstOrDefault(a => a.AccountId == items.AccountId);
+                            <div class="row comment">
+                                <div class="col-sm-3 col-md-2 text-center-xs">
+                                    <p>
+                                        <img src="@account?.Avatar" class="img-responsive img-circle" alt="" style="width:80px">
+                                    </p>
+                                </div>
+                                <div class="col-sm-9 col-md-10">
+                                    <h5 class="text-uppercase">@account?.FullName</h5>
+                                    <p class="posted"><i class="fa fa-clock-o"></i> @items.CreatedDate.Value.ToString("dd/MM/yyyy")</p>
+                                    <p>
+                                        @items.Content
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </section>
+
+                <section id="comment-form" class="add-comments" style="margin-top:40px">
+                    <h4 class="text-uppercase wow fadeInLeft animated">Bình luận bài viết</h4>
+                    @if (Functions.account != null)
+                    {
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="firstname">Họ tên</label>
+                                <input type="text" class="form-control" value="@Functions.account.FullName" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="lastname">Địa chỉ</label>
+                                <input type="text" class="form-control" value="@Functions.account.Address" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="text" class="form-control" value="@Functions.account.Email" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="subject">Số điện thoại</label>
+                                <input type="text" class="form-control" value="@Functions.account.Phone" readonly>
+                            </div>
+                        </div>
+                    }
+
+                    <form id="comment_form" method="post" novalidate="novalidate">
+                        <div class="col-sm-12">
+                            <input type="hidden" name="AccountId" id="i_AccountId" value="@Functions.account?.AccountId">
+                            <div class="form-group">
+                                <label>Nội dung</label>
+                                <textarea name="Message" id="i_Message" class="form-control" style="height:150px"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 text-center">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-comment-o"></i> Bình luận</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            function formatDate(date) {
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+
+            $("#comment_form").validate({
+                rules: {
+                    Message: {
+                        required: true,
+                        minlength: 3
+                    }
+                },
+                messages: {
+                    Message: {
+                        required: "Vui lòng nhập nội dung bình luận!",
+                        minlength: "Nội dung bình luận phải có ít nhất {0} ký tự!"
+                    }
+                },
+                submitHandler: function (form) {
+                    if (@(Functions.account?.RoleID != 3 ? "true" : "false")) {
+                        toastr.error('Đăng nhập để bình luận bài viết');
+                    } else {
+                        _AccountId = $("#i_AccountId").val();
+                        _Message = $("#i_Message").val();
+                        $.ajax({
+                            url: "/Post/Create",
+                            type: "POST",
+                            data: { AccountId: _AccountId, Message: _Message, PostId: @Model.PostId },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    toastr.success('Bình luận bài viết thành công');
+                                    $("#i_Message").val("");
+                                    var newComment = rs.comment;
+                                    var account = rs.account;
+                                    var html = `
+                                        <div class="row comment">
+                                            <div class="col-sm-3 col-md-2 text-center-xs">
+                                                <p>
+                                                    <img src="${account.avatar}" class="img-responsive img-circle" alt="" style="width:80px">
+                                                </p>
+                                            </div>
+                                            <div class="col-sm-9 col-md-10">
+                                                <h5 class="text-uppercase">${account.fullName}</h5>
+                                                <p class="posted"><i class="fa fa-clock-o"></i> ${formatDate(new Date(newComment.createdDate))}</p>
+                                                <p>${newComment.content}</p>
+                                            </div>
+                                        </div>
+                                    `;
+                                    $(".comment-list").prepend(html);
+                                    var commentCount = parseInt($("#comment-count").text()) || 0;
+                                    commentCount += 1;
+                                    $("#comment-count").text(commentCount + " Bình luận");
+                                }
+                                else {
+                                    toastr.error('Bình luận bài viết không thành công');
+                                }
+                            },
+                            error: function (error) {
+                                toastr.error('Có lỗi xảy ra khi bình luận');
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+}

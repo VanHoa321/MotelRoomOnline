@@ -1,0 +1,36 @@
+﻿@using MotelRoomOnline.Utilities
+@model IEnumerable<MotelRoomOnline.Models.Contact>
+@{
+    List<Account> listAcc = ViewBag.Account;
+}
+<div class="testimonial-area recent-property" style="background-color: #FCFCFC; padding-bottom: 15px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1 col-sm-12 text-center page-title">
+                <h2>Phản hồi người dùng </h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="row testimonial">
+                <div class="col-md-12">
+                    <div id="testimonial-slider">
+                        @foreach(var items in Model)
+                        {
+                            var account = listAcc.FirstOrDefault(i => i.AccountId == items.AccountId);
+                            <div class="item">
+                                <div class="client-text">
+                                    <p>@items.Message</p>
+                                    <h4><strong>@account.FullName, </strong><i>Khách hàng</i></h4>
+                                </div>
+                                <div class="client-face fadeInRight" data-wow-delay=".9s">
+                                    <img src="@account.Avatar" alt="" style="width:80px;margin-top:-15px">
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

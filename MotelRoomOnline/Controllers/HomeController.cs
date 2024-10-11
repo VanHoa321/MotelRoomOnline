@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MotelRoomOnline.Models;
+using MotelRoomOnline.Utilities;
 using System.Diagnostics;
 
 namespace MotelRoomOnline.Controllers
@@ -18,9 +19,11 @@ namespace MotelRoomOnline.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Logout()
         {
-            return View();
+            Functions.account = null;
+            Functions.message = string.Empty;
+            return Redirect("/Home");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

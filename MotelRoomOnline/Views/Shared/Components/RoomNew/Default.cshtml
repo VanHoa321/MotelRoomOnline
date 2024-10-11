@@ -1,0 +1,44 @@
+﻿@model IEnumerable<MotelRoomOnline.Models.Room>
+@using MotelRoomOnline.Utilities
+
+<style>
+    .text-view {
+        display: block;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .text-view a {
+        display: inline-block;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
+<div class="panel panel-default sidebar-menu wow fadeInRight animated">
+    <div class="panel-heading">
+        <h3 class="panel-title">Phòng trọ mới</h3>
+    </div>
+    <div class="panel-body recent-property-widget">
+        <ul>
+            @foreach (var items in Model)
+            {
+                var sUrl = $"/phong-tro/{items.Alias}-{items.RoomId}.html";
+                <li>
+                    <div class="col-md-4 blg-thumb p0">
+                        <a href="@sUrl"><img src="@items.Image" style="width: 80px; height:60px"></a>
+                    </div>
+                    <div class="col-md-8 blg-entry">
+                        <h6 class="text-view"> <a href="@sUrl">@items.RoomName</a></h6>
+                        <span class="property-price">@Functions.ToVnd(items.PriceRoom) <sup>đ</sup></span>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

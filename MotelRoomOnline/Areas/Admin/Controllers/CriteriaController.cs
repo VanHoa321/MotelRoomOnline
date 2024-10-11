@@ -71,6 +71,11 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
         public IActionResult Delete(int? id)
         {
             var item = _context.Criterias.Find(id);
+            var check = _context.RoomCriterias.Any(c => c.CriteriaId == item.CriteriaId);
+            if (check)
+            {
+                return Json(new { success = false });
+            }
             if (item != null)
             {
                 _context.Criterias.Remove(item);
@@ -84,6 +89,11 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
         public IActionResult IsActive(int? id)
         {
             var item = _context.Criterias.Find(id);
+            var check = _context.RoomCriterias.Any(c => c.CriteriaId == item.CriteriaId);
+            if (check)
+            {
+                return Json(new { success = false });
+            }
             if (item != null)
             {
                 item.IsActive = !item.IsActive;

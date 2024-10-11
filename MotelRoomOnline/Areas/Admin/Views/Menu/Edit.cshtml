@@ -1,0 +1,148 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.Menu
+@{
+    ViewData["Title"] = "Chỉnh sửa Menu";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Chỉnh sửa Menu</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý Menu</li>
+                        <li class="breadcrumb-item active">Chỉnh sửa Menu</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <form method="post" id="quickForm" asp-action="Edit">
+                            <div class="card-body">
+                                <input type="hidden" asp-for="MenuId" class="form-control">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="MenuName">Tên Menu</label>
+                                            <input type="text" asp-for="MenuName" class="form-control" placeholder="Nhập tên Menu">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Levels">Cấp Menu</label>
+                                            <select asp-for="Levels" class="form-control select2bs4" style="width: 100%">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Alias">Đường dẫn</label>
+                                    <input type="text" asp-for="Alias" class="form-control" placeholder="Nhập đường dẫn Menu">
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="ParentId">Menu cha</label>
+                                    <select asp-for="ParentId" class="form-control select2bs4" asp-items="@(new SelectList(ViewBag.mnList,"Value","Text"))"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Position">Vị trí</label>
+                                    <input type="number" asp-for="Position" class="form-control" placeholder="Nhập vị trí hiển thị">
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Description">Mô tả thêm</label>
+                                    <textarea class="form-control mb-3" asp-for="Description" placeholder="Nhập mô tả thêm" style=" height: 100px"></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="CreatedDate">Ngày tạo</label>
+                                            <input type="text" asp-for="CreatedDate" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="CreatedBy">Người tạo</label>
+                                            <input type="text" asp-for="CreatedBy" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="IsActive">Active</label>
+                                    <div class="icheck-success d-inline" style="margin-left:10px">
+                                        @Html.CheckBox("IsActive", new { id = "checkboxSuccess1" })
+                                        <label for="checkboxSuccess1"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a asp-controller="Menu" asp-action="Index" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" title="Lưu"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+@section Scripts{
+    <script src="~/admin/assets/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/admin/assets/plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="~/admin/assets/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/admin/assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    MenuName: {
+                        required: true,
+                        minlength: 2,
+                    },
+                    Position: {
+                        required: true,
+                        min: 1
+                    }
+                },
+                messages: {
+                    MenuName: {
+                        required: "Tên Menu không được để trống",
+                        minlength: "Tên Menu phải có ít nhất {0} ký tự!"
+                    },
+                    Position: {
+                        required: "Vị trí hiển thị không được để trống",
+                        min: "Vị trí hiển thị phải lớn hơn {0}!"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('.select2').select2()
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+        });
+    </script>
+}

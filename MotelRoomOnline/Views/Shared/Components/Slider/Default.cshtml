@@ -1,0 +1,36 @@
+﻿@model IList<Slider>
+
+<div class="slide-2">
+    <div id="slider" class="sl-slider-wrapper">
+        <div class="sl-slider">           
+            @foreach (var items in Model)
+            {
+                <div class="sl-slide" data-orientation="vertical" data-slice1-rotation="10" data-slice2-rotation="-15" data-slice1-scale="1.5" data-slice2-scale="1.5">
+                    <div class="sl-slide-inner ">
+                        <div class="bg-img bg-img-1" style="background-image: url(@items.Image);"></div>
+                        <blockquote>
+                            <h3 class="text-center"><a style="color:white" href="@items.Alias">@items.SliderName</a></h3>
+                            <p>
+                                @items.Content
+                            </p>                           
+                        </blockquote>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <nav id="nav-dots" class="nav-dots">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                if (i == 0)
+                {
+                    <span class="nav-dot-current"></span>
+                }
+                else
+                {
+                    <span></span>
+                }
+            }
+        </nav>
+    </div>
+</div>

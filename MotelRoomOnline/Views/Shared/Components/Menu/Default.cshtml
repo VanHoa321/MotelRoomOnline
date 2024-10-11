@@ -1,0 +1,38 @@
+﻿@model IEnumerable<MotelRoomOnline.Models.Menu>
+@using MotelRoomOnline.Utilities
+
+<ul class="main-nav nav navbar-nav navbar-right">
+    @foreach (var menu in Model.Where(i => i.Levels == 1).OrderBy(n => n.Position))
+    {
+        var Pid = menu.MenuId;
+        string url = Functions.TitleSlugGenerationAlias(menu.MenuName);
+        if (!string.IsNullOrEmpty(menu.Alias))
+        {
+            url = menu.Alias;
+        }
+        var Smenu = Model.Where(i => i.ParentId == Pid).OrderBy(i => i.Position).ToList();
+        if (Smenu.Count == 0)
+        {
+            <li class="wow fadeInDown" data-wow-delay="0.1s"><a class="" href="/@url">@menu.MenuName</a></li>
+        }
+        else
+        {
+            <li class="dropdown ymm-sw " data-wow-delay="0.1s">
+                <a href="/@url" class="dropdown-toggle active" data-toggle="dropdown" data-hover="dropdown" data-delay="200">@menu.MenuName<b class="caret"></b></a>
+                <ul class="dropdown-menu navbar-nav">
+                    @foreach(var item in Smenu)
+                    {
+                        string url1 = Functions.TitleSlugGenerationAlias(item.MenuName);
+                        if (!string.IsNullOrEmpty(item.Alias))
+                        {
+                            url1 = item.Alias;
+                        }
+                        <li>
+                            <a href="/@url1">@item.MenuName</a>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+    }
+</ul>

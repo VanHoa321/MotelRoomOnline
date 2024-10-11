@@ -1,0 +1,44 @@
+﻿@model IEnumerable<MotelRoomOnline.Models.Post>
+@using MotelRoomOnline.Utilities
+
+<style>
+    .text-view {
+        display: block;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .text-view a {
+        display: inline-block;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
+<div class="panel panel-default sidebar-menu wow fadeInRight animated">
+    <div class="panel-heading">
+        <h3 class="panel-title">Bài đăng mới</h3>
+    </div>
+    <div class="panel-body recent-property-widget">
+        <ul>
+            @foreach (var items in Model)
+            {
+                var sUrl = $"/bai-viet/{items.Alias}-{items.PostId}.html";
+                <li>
+                    <div class="col-md-4 blg-thumb p0">
+                        <a href="@sUrl"><img src="@items.PostImage" style="width: 80px; height:60px"></a>
+                    </div>
+                    <div class="col-md-8 blg-entry">
+                        <h6 class="text-view"> <a href="@sUrl">@items.PostTitle</a></h6>
+                        <span class="property-price text-view">@items.Abstract</span>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

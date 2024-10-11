@@ -1,0 +1,153 @@
+﻿@using MotelRoomOnline.Utilities;
+
+@{
+    ViewData["Title"] = "Liên hệ";
+}
+
+<div class="content-area recent-property padding-top-40" style="background-color: #FFF;">
+    <div class="container">
+        <div class="col-md-9">
+            <div class="" id="contact1">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h3><i class="fa fa-map-marker"></i> Địa chỉ</h3>
+                        <p>
+                            Nghi Xuân - Nghi Lộc - Nghệ An
+                            <br>Việt Nam
+                            <br>
+                        <p><strong>Võ Văn Hòa</strong></p>
+                    </div>
+                    <div class="col-sm-4">
+                        <h3><i class="fa fa-phone"></i> Liên hệ</h3>
+                        <p class="text-muted">Liên hệ cho chúng tôi nếu bạn có thắc mắc cần được giải đáp.</p>
+                        <p><strong>034 9191 354</strong></p>
+                    </div>
+                    <div class="col-sm-4">
+                        <h3><i class="fa fa-envelope"></i> Hỗ trợ</h3>
+                        <p class="text-muted">Xin vui lòng viết email cho chúng tôi để nhận phản hồi sớm nhất.</p>
+                        <p><strong>vanhoa12092003@gmail.com</strong></p>
+                    </div>
+                </div>
+                <hr>
+                <h2>Gửi phản hồi</h2>
+                <div class="row">
+                    @if (Functions.account == null)
+                    {
+                        <div class="col-sm-12">
+                            <div class="alert alert-info alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <i class="bi bi-exclamation-triangle"></i> Đăng nhập để gửi phản hồi
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="firstname">Họ tên</label>
+                                <input type="text" class="form-control" value="@Functions.account.FullName" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="lastname">Địa chỉ</label>
+                                <input type="text" class="form-control" value="@Functions.account.Address" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="text" class="form-control" value="@Functions.account.Email" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="subject">Số điện thoại</label>
+                                <input type="text" class="form-control" value="@Functions.account.Phone" readonly>
+                            </div>
+                        </div>
+                    }
+                    <form id="contact_form" method="post" novalidate="novalidate">
+                        <div class="col-sm-12">
+                            <input type="hidden" name="AccountId" id="i_AccountId" value="@Functions.account?.AccountId">
+                            <div class="form-group">
+                                <label>Nội dung</label>
+                                <textarea name="Message" id="i_Message" class="form-control" style="height:150px"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 text-center">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-envelope-o"></i> Gửi phản hồi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 ">
+            <div class="blog-asside-right">
+                @await Component.InvokeAsync("RoomNew")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-map" style="margin-bottom:20px">
+    <iframe class="contact-map-size"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d120931.65572707039!2d105.6145827127232!3d18.703702852075832!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3139ce640b5a1dad%3A0xf8266890856bbaa1!2zVHAuIFZpbmgsIE5naOG7hyBBbiwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1713189375347!5m2!1svi!2s"
+            allowfullscreen="" loading="lazy" style="width:100%; height:600px">
+    </iframe>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#contact_form").validate({
+                rules: {
+                    AccountId: {
+                        required: true,
+                        min: 1
+                    },
+                    Message: {
+                        required: true,
+                        minlength: 3
+                    }
+                },
+                messages: {
+                    AccountId: {
+                        required: "Vui lòng nhập đăng nhập để gửi phản hồi!",
+                        min: "Vui lòng nhập đăng nhập để gửi phản hồi!"
+                    },
+                    Message: {
+                        required: "Vui lòng nhập nội dung phản hồi!",
+                        minlength: "Nội dung phản hồi phải có ít nhất {0} ký tự!"
+                    }
+                },
+                submitHandler: function (form) {
+                    if (@(Functions.account?.RoleID != 3 ? "true" : "false")) {
+                        toastr.error('Đăng nhập để gửi phản hồi');
+                    } else {
+                        _AccountId = $("#i_AccountId").val();
+                        _Message = $("#i_Message").val();
+                        $.ajax({
+                            url: "/Contact/Create",
+                            type: "POST",
+                            data: { AccountId: _AccountId, Message: _Message },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    toastr.success('Gửi phản hồi thành công');
+                                    $("#i_Message").val("");
+                                }
+                                else {
+                                    toastr.error('Gửi phản hồi không thành công');
+                                }
+                            },
+                            error: function (error) {
+                                toastr.error('Có lỗi xảy ra khi gửi phản hồi');
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+}
+
