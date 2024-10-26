@@ -1,0 +1,88 @@
+﻿@using MotelRoomOnline.Models
+@using MotelRoomOnline.Utilities
+@model IList<Post>
+
+@{
+    ViewData["Title"] = "Quản lý bình luận";
+    List<PostCategories> list = ViewBag.List;
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý bình luận</li>
+                        <li class="breadcrumb-item active">Danh sách bài viết</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Danh sách bài viết</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="example-table" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Tiêu đề</th>
+                                        <th>Phân loại</th>
+                                        <th>Trạng thái</th>
+                                        <th>Chức năng</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="showdata">
+                                    @{
+                                        int i = 1;
+                                    }
+                                    @foreach (var item in Model)
+                                    {
+                                        var name = list.FirstOrDefault(l => l.PostCategoryId == item.PostCategoryId);
+                                        <tr id="tr_@item.PostId">
+                                            <td>@(i++)</td>
+                                            <td><img src="@item.PostImage" style="width:80px; height:60px" /></td>
+                                            <td>@item.PostTitle</td>
+                                            <td>@name.PostCategoryName</td>
+                                            <td>
+                                                @if (item.IsActive == true)
+                                                {
+                                                    <a href="#" class="IsActive" data-id="@item.PostId"><i class="bi bi-check2 text-success" style="font-size:20px"></i></a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="#" class="IsActive" data-id="@item.PostId"><i class="bi bi-x text-danger" style="font-size:20px"></i></a>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a asp-area="Admin" asp-controller="PostComment" asp-action="ListComment"
+                                                   asp-route-id="@item.PostId" class="btn btn-info btn-sm"
+                                                   title="Xem bình luận"><i class="fa-solid fa-comment"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+
+

@@ -1,0 +1,52 @@
+﻿@using MotelRoomOnline.Models
+@model IList<Contact>
+
+@{
+    List<Account> account = ViewBag.Account;
+    List<Contact> contact = ViewBag.count;
+}
+
+<style>
+    .text-view {
+        display: block;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+</style>
+
+<li class="nav-item dropdown">
+    <a class="nav-link" data-toggle="dropdown" href="#">
+        <i class="far fa-comments"></i>
+        <span class="badge badge-warning navbar-badge">@contact.Count</span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+        <span class="dropdown-item dropdown-header">@contact.Count Phản hồi mới</span>
+        <div class="dropdown-divider"></div>        
+        @foreach(var items in Model)
+        {
+            var acc = account.First(i => i.AccountId == items.AccountId);
+            <a asp-area="Admin" asp-controller="Contact" asp-action="Details" asp-route-id="@items.ContactId" class="dropdown-item">
+                <!-- Message Start -->
+                <div class="media">
+                    <img src="@acc.Avatar" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                    <div class="media-body">
+                        <h3 class="dropdown-item-title">
+                            @acc.FullName
+                        </h3>
+                        <p class="text-sm text-view">@items.Message</p>
+                    </div>
+                </div>
+                <!-- Message End -->
+            </a>
+            <div class="dropdown-divider"></div>
+        }
+        @if (contact.Count > 0)
+        {
+            <a href="/Admin/Contact/Index" class="dropdown-item dropdown-footer">Xem tất cả</a>
+        }
+    </div>
+</li>

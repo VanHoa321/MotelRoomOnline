@@ -1,0 +1,195 @@
+﻿@using MotelRoomOnline.Areas.Admin.Models
+@using MotelRoomOnline.Utilities
+@model IList<Account>
+
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý người dùng</li>
+                        <li class="breadcrumb-item active">Danh sách khách hàng</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Danh sách khách hàng</h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table id="example-table" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Họ tên</th>
+                                        <th>SĐT</th>
+                                        <th>Email</th>
+                                        <th>Địa chỉ</th>
+                                        <th>Trạng thái</th>
+                                        <th>Chức năng</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="showdata">
+                                    @{
+                                        int i = 1;
+                                    }
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@(i++)</td>
+                                            <td><img src="@item.Avatar" style="width:80px; height:80px" /></td>
+                                            <td>@item.FullName</td>
+                                            <td>@item.Phone</td>
+                                            <td>@item.Email</td>
+                                            <td>@item.Address</td>
+                                            <td class="status-column">
+                                                <a href="#"><i class="status-icon bi @((item.Status == true) ? "bi-check2 text-success" : "bi-x text-danger")" style="font-size:20px" title="@((item.Status == true) ? "Đang hoạt động" : "Đã bị khóa")"></i></a>
+                                            </td>
+                                            <td>
+                                                <a asp-area="Admin" asp-controller="User" asp-action="Details"
+                                                   asp-route-id="@item.AccountId" class="btn btn-info btn-sm"
+                                                   title="Xem thông tin"><i class="fa-solid fa-eye"></i></a>
+                                                @if (item.Status == true)
+                                                {
+                                                    <a class="btn btn-danger btn-sm btn-lock-acc" data-id="@item.AccountId"
+                                                       title="Khóa tài khoản"><i class="fa-solid fa-lock"></i></a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-success btn-sm btn-unlock-acc" data-id="@item.AccountId"
+                                                       title="Mở khóa tài khoản"><i class="fa-solid fa-lock-open"></i></a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            $('body').on('click', '.btn-lock-acc', function () {
+                var button = $(this);
+                _id = button.data("id");
+                var statusColumn = $(this).closest('tr').find('.status-column .status-icon');
+                Swal.fire({
+                    title: "Xác nhận khóa tài khoản?",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Khóa",
+                    cancelButtonText: "Hủy"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/Admin/User/ChangeStatus",
+                            type: "POST",
+                            data: { id: _id },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    toastr.success('Khóa tài khoản thành công');
+                                    if (rs.status) {
+                                        button
+                                            .removeClass('btn-success btn-unlock-acc')
+                                            .addClass('btn-danger btn-lock-acc')
+                                            .attr('title', 'Khóa tài khoản')
+                                            .html('<i class="fa-solid fa-lock"></i>');
+                                        statusColumn.removeClass('bi-x text-danger').addClass('bi-check2 text-success');
+                                        statusColumn.attr('title', 'Đang hoạt động');
+                                    } else {
+                                        button
+                                            .removeClass('btn-danger btn-lock-acc')
+                                            .addClass('btn-success btn-unlock-acc')
+                                            .attr('title', 'Mở khóa tài khoản')
+                                            .html('<i class="fa-solid fa-lock-open"></i>');
+                                        statusColumn.removeClass('bi-check2 text-success').addClass('bi-x text-danger');
+                                        statusColumn.attr('title', 'Đã bị khóa');
+                                    }
+                                }
+                                else {
+                                    toastr.error('Khóa tài khoản không thành công');
+                                }
+                            }
+                        });
+                    }
+                });
+            })
+
+            $('body').on('click', '.btn-unlock-acc', function () {
+                var button = $(this);
+                _id = button.data("id");
+                var statusColumn = $(this).closest('tr').find('.status-column .status-icon');
+                Swal.fire({
+                    title: "Xác nhận mở khóa tài khoản?",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Mở khóa",
+                    cancelButtonText: "Hủy"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/Admin/User/ChangeStatus",
+                            type: "POST",
+                            data: { id: _id },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    toastr.success('Mở khóa tài khoản thành công');
+                                    if (rs.status) {
+                                        button
+                                            .removeClass('btn-success btn-unlock-acc')
+                                            .addClass('btn-danger btn-lock-acc')
+                                            .attr('title', 'Khóa tài khoản')
+                                            .html('<i class="fa-solid fa-lock"></i>');
+                                        statusColumn.removeClass('bi-x text-danger').addClass('bi-check2 text-success');
+                                        statusColumn.attr('title', 'Đang hoạt động');
+                                    } else {
+                                        button
+                                            .removeClass('btn-danger btn-lock-acc')
+                                            .addClass('btn-success btn-unlock-acc')
+                                            .attr('title', 'Mở khóa tài khoản')
+                                            .html('<i class="fa-solid fa-lock-open"></i>');
+                                        statusColumn.removeClass('bi-check2 text-success').addClass('bi-x text-danger');
+                                        statusColumn.attr('title', 'Đã bị khóa');
+                                    }
+                                }
+                                else {
+                                    toastr.error('Mở khóa tài khoản không thành công');
+                                }
+                            }
+                        });
+                    }
+                });
+            })
+        })
+    </script>
+}
+
+

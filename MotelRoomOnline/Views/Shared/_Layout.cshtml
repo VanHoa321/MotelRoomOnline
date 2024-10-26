@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="~/web/assets/css/style.css">
     <link rel="stylesheet" href="~/web/assets/css/responsive.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link href="~/admin/assets/plugins/toastr/toastr.min.css" rel="stylesheet" />
     <link href="~/admin/assets/plugins/toastr/toastr.css" rel="stylesheet" />
     <style>
@@ -69,6 +70,7 @@
     <script type="text/javascript" src="~/web/assets/js/lightslider.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/admin/assets/plugins/toastr/toastr.min.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"></script>
     @RenderSection("Scripts", required: false)
     <script type="text/javascript">
@@ -102,6 +104,40 @@
             })();
             Page.init();
         });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('body').on('click', '.RLandlord', function () {
+                _id = $(this).data("id");
+                Swal.fire({
+                    title: "Xác nhận đăng ký chủ trọ ?",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Đăng ký",
+                    cancelButtonText: "Hủy"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/Admin/User/RegisterLandlord",
+                            type: "POST",
+                            data: { id: _id },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    toastr.success('Đã gửi yêu cầu đăng ký');
+                                    LoadData();
+                                }
+                                else {
+                                    toastr.error('Gửi yêu cầu không thành công');
+                                }
+                            }
+                        });
+                    }
+                });
+            })
+        })
     </script>
 </body>
 </html>

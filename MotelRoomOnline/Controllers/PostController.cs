@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using MotelRoomOnline.Models;
 using MotelRoomOnline.Models.ViewModels;
 using MotelRoomOnline.Utilities;
@@ -14,10 +15,27 @@ namespace MotelRoomOnline.Controllers
             _context = context;
         }
 
-        public IActionResult Index(int page = 1)
+        [Route("bai-viet")]
+        public IActionResult Index()
+        {      
+            ViewBag.postC = _context.PostCategories.ToList();
+            return View();
+        }
+
+        public IActionResult GetData(int page = 1, string searchKey = "", int categoryId = 0)
         {
-            var post = _context.Posts.Where(p => p.IsActive == true).OrderByDescending(p =>p.PostId).Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            ViewBag.Account = _context.Accounts.ToList();
+            var query = _context.Posts.Where(p => p.IsActive == true);
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                query = query.Where(p => p.PostTitle.Contains(searchKey) || p.Abstract.Contains(searchKey));
+            }
+            if (categoryId > 0)
+            {
+                query = query.Where(p => p.PostCategoryId == categoryId);
+            }
+            var post = query.OrderByDescending(p => p.PostId).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var accounts = _context.Accounts.ToList();
+            var comment = _context.PostComments.ToList();
             var postListViewModel = new PostListViewModel
             {
                 Posts = post,
@@ -25,10 +43,10 @@ namespace MotelRoomOnline.Controllers
                 {
                     ItemsPerPage = pageSize,
                     CurrentPage = page,
-                    TotalItems = _context.Posts.Where(p => p.IsActive == true).Count()
+                    TotalItems = query.Count()
                 }
             };
-            return View(postListViewModel);
+            return Json(new { data = postListViewModel, acc = accounts, cmt = comment });
         }
 
         [Route("/bai-viet/{alias}-{id}.html")]

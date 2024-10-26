@@ -89,7 +89,7 @@
         </div>
 
         <div class="collapse navbar-collapse yamm" id="navigation">
-            @if (!Functions.IsLogin(3))
+            @if (!Functions.IsLogin(3) && !Functions.IsLogin(4))
             {
                 <div class="button navbar-right">
                     <button class="navbar-btn nav-button wow bounceInRight login" onclick="window.location.href='/login'" data-wow-delay="0.4s">Đăng nhập</button>
@@ -112,6 +112,10 @@
                                 <span>@Functions.account.Email</span>
                             </div>
                             <a asp-controller="Customer" asp-action="Index"><i class="bi bi-person"></i> Thông tin cá nhân</a>
+                            @if(Functions.account.RoleID == 3)
+                            {
+                                <a data-id="@Functions.account.AccountId" class="RLandlord"><i class="bi bi-person"></i> Đăng ký chủ trọ</a>
+                            }
                             <a asp-controller="Home" asp-action="Logout"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a>
                         </div>
                     </div>

@@ -6,12 +6,17 @@
     Account account = ViewBag.Account;
     List<RoomImage> imgList = ViewBag.Image;
 }
-
+<style>
+    .swiper-slide img {
+        width: 100%;
+        height: 500px;
+    }
+</style>
 <div class="content-area single-property" style="background-color: #FCFCFC;">
     &nbsp;
     <div class="container">
         <div class="clearfix padding-top-40">
-            <div class="col-md-8 single-property-content prp-style-2">
+            <div class="col-md-7 single-property-content prp-style-2">
                 <div class="">
                     <div class="row">
                         <div class="light-slide-item">
@@ -21,18 +26,22 @@
                                         <i class="fa fa-star-o"></i>
                                     </a>
                                 </div>
-                                <ul id="image-gallery" class="gallery list-unstyled cS-hidden">
-                                    @foreach(var items in imgList)
-                                    {
-                                        <li data-thumb="@items.Image">
-                                            <img src="@items.Image"/>
-                                        </li>
-                                    }                                    
-                                </ul>
+                                <div class="swiper-container">
+                                    <div class="swiper-wrapper">
+                                        @foreach(var item in imgList)
+                                        {
+                                            <div class="swiper-slide"><img src="@item.Image" alt="Image 1"></div>
+                                        }
+
+                                    </div>
+                                    <div class="swiper-button-next"></div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-pagination"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="single-property-wrapper">
+                    <div class="single-property-wrapper" style="margin-top:20px">
                         <div class="section additional-details">
                             <h4 class="s-property-title">Thông tin</h4>
                             <ul class="additional-details-list clearfix">
@@ -59,59 +68,10 @@
                             <p>@Html.Raw(Model.Content)</p>
                         </div>                        
                     </div>
-                </div>
-
-                <div class="similar-post-section padding-top-40">
-                    <div id="prop-smlr-slide_0">
-                        <div class="box-two proerty-item">
-                            <div class="item-thumb">
-                                <a href="property-1.html"><img src="~/web/assets/img/similar/property-1.jpg"></a>
-                            </div>
-                            <div class="item-entry overflow">
-                                <h5><a href="property-1.html"> Super nice villa </a></h5>
-                                <div class="dot-hr"></div>
-                                <span class="pull-left"><b> Area :</b> 120m </span>
-                                <span class="proerty-price pull-right"> $ 300,000</span>
-                            </div>
-                        </div>
-                        <div class="box-two proerty-item">
-                            <div class="item-thumb">
-                                <a href="property-1.html"><img src="~/web/assets/img/similar/property-2.jpg"></a>
-                            </div>
-                            <div class="item-entry overflow">
-                                <h5><a href="property-1.html"> Super nice villa </a></h5>
-                                <div class="dot-hr"></div>
-                                <span class="pull-left"><b> Area :</b> 120m </span>
-                                <span class="proerty-price pull-right"> $ 300,000</span>
-                            </div>
-                        </div>
-                        <div class="box-two proerty-item">
-                            <div class="item-thumb">
-                                <a href="property-1.html"><img src="~/web/assets/img/similar/property-3.jpg"></a>
-                            </div>
-                            <div class="item-entry overflow">
-                                <h5><a href="property-1.html"> Super nice villa </a></h5>
-                                <div class="dot-hr"></div>
-                                <span class="pull-left"><b> Area :</b> 120m </span>
-                                <span class="proerty-price pull-right"> $ 300,000</span>
-                            </div>
-                        </div>
-                        <div class="box-two proerty-item">
-                            <div class="item-thumb">
-                                <a href="property-1.html"><img src="~/web/assets/img/similar/property-1.jpg"></a>
-                            </div>
-                            <div class="item-entry overflow">
-                                <h5><a href="property-1.html"> Super nice villa </a></h5>
-                                <div class="dot-hr"></div>
-                                <span class="pull-left"><b> Area :</b> 120m </span>
-                                <span class="proerty-price pull-right"> $ 300,000</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </div>               
             </div>
 
-            <div class="col-md-4 p0">
+            <div class="col-md-5 p0">
                 <aside class="sidebar sidebar-property blog-asside-right property-style2">
                     <div class="dealer-widget">
                         <div class="dealer-content">
@@ -239,6 +199,56 @@
                         </div>
                     </div>
                 </aside>
+
+            </div>
+
+        </div>
+        <div class="similar-post-section padding-top-40">
+            <div id="prop-smlr-slide_0">
+                <div class="box-two proerty-item">
+                    <div class="item-thumb">
+                        <a href="property-1.html"><img src="~/web/assets/img/similar/property-1.jpg"></a>
+                    </div>
+                    <div class="item-entry overflow">
+                        <h5><a href="property-1.html"> Super nice villa </a></h5>
+                        <div class="dot-hr"></div>
+                        <span class="pull-left"><b> Area :</b> 120m </span>
+                        <span class="proerty-price pull-right"> $ 300,000</span>
+                    </div>
+                </div>
+                <div class="box-two proerty-item">
+                    <div class="item-thumb">
+                        <a href="property-1.html"><img src="~/web/assets/img/similar/property-2.jpg"></a>
+                    </div>
+                    <div class="item-entry overflow">
+                        <h5><a href="property-1.html"> Super nice villa </a></h5>
+                        <div class="dot-hr"></div>
+                        <span class="pull-left"><b> Area :</b> 120m </span>
+                        <span class="proerty-price pull-right"> $ 300,000</span>
+                    </div>
+                </div>
+                <div class="box-two proerty-item">
+                    <div class="item-thumb">
+                        <a href="property-1.html"><img src="~/web/assets/img/similar/property-3.jpg"></a>
+                    </div>
+                    <div class="item-entry overflow">
+                        <h5><a href="property-1.html"> Super nice villa </a></h5>
+                        <div class="dot-hr"></div>
+                        <span class="pull-left"><b> Area :</b> 120m </span>
+                        <span class="proerty-price pull-right"> $ 300,000</span>
+                    </div>
+                </div>
+                <div class="box-two proerty-item">
+                    <div class="item-thumb">
+                        <a href="property-1.html"><img src="~/web/assets/img/similar/property-1.jpg"></a>
+                    </div>
+                    <div class="item-entry overflow">
+                        <h5><a href="property-1.html"> Super nice villa </a></h5>
+                        <div class="dot-hr"></div>
+                        <span class="pull-left"><b> Area :</b> 120m </span>
+                        <span class="proerty-price pull-right"> $ 300,000</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -246,20 +256,21 @@
 
 @section Scripts{
     <script>
-        $(document).ready(function () {
-
-            $('#image-gallery').lightSlider({
-                gallery: true,
-                item: 1,
-                thumbItem: 9,
-                slideMargin: 0,
-                speed: 500,
-                auto: true,
-                loop: true,
-                onSliderLoad: function () {
-                    $('#image-gallery').removeClass('cS-hidden');
-                }
-            });
+        var swiper = new Swiper('.swiper-container', {
+            slidesPerView: 1,
+            spaceBetween: 10,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            autoplay: {
+                delay: 2500,
+                disableOnInteraction: false,
+            },
         });
     </script>
 }

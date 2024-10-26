@@ -4,8 +4,7 @@
 
 @{
     ViewData["Title"] = "Bài viết";
-    List<Account> accountList = ViewBag.Account;
-    int currentPage = Model.PagingInfo.CurrentPage;
+    List<PostCategories> postC = ViewBag.postC;
 }
 
 <style>
@@ -28,111 +27,142 @@
                         <h3 class="panel-title">Tìm kiếm</h3>
                     </div>
                     <div class="panel-body">
-                        <form role="search">
-                            <div class="input-group">
-                                <input class="form-control" placeholder="Nhập thông tin..." type="text">
-                                <span class="input-group-btn">
-                                    <button type="submit" class="btn btn-smal">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </span>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <input id="searchKey" type="text" class="form-control" placeholder="Nhập thông tin...">
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
-
-                @await Component.InvokeAsync("PostNew")
-
-                @await Component.InvokeAsync("RoomNew")
 
                 <div class="panel sidebar-menu wow  fadeInRight animated">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Tags</h3>
+                        <h3 class="panel-title">Phân loại</h3>
                     </div>
-                    <div class="panel-body">
-                        <ul class="tag-cloud">
-                            <li>
-                                <a href="#"><i class="fa fa-tags"></i> html5</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-tags"></i> css3</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-tags"></i> jquery</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-tags"></i> ajax</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-tags"></i> php</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-tags"></i> responsive</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-tags"></i> visio</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-tags"></i> bootstrap</a>
-                            </li>
-                        </ul>
+                    <div class="row">
+                        <div class="col-xs-12" style="margin-top:15px">
+                            <select id="lunchBegins" class="selectpicker" data-live-search="true" data-live-search-style="begins" onchange="loadPosts(1)">
+                                <option value="0">Chọn phân loại</option>
+                                @foreach (var items in postC)
+                                {
+                                    <option value="@items.PostCategoryId">@items.PostCategoryName</option>
+                                }
+                            </select>
+                        </div>
                     </div>
                 </div>
+                @await Component.InvokeAsync("PostNew")
             </div>
 
-            <div class="blog-lst col-md-9">
-                @foreach(var items in Model.Posts)
-                {
-                    var sUrl = $"/bai-viet/{items.Alias}-{items.PostId}.html";
-                    var account = accountList.FirstOrDefault(a => a.AccountId == items.AccountId);
-                    <section class="post">
-                        <div class="text-center padding-b-50">
-                            <h4 class="wow fadeInLeft animated text-view" style="margin-bottom:20px">@items.PostTitle</h4>
-                            <div class="title-line wow fadeInRight animated"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <p class="author-category">
-                                    Đăng bởi <a href="@sUrl">@items.CreatedBy</a>
-                                </p>
-                            </div>
-                            <div class="col-sm-6 right">
-                                <p class="date-comments">
-                                    <a href="@sUrl"><i class="fa fa-calendar-o"></i> @items.CreatedDate.Value.ToString("dd/MM/yyyy")</a>
-                                    <a href="@sUrl"><i class="fa fa-comment-o"></i> 8 Bình luận</a>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="image wow fadeInLeft animated">
-                            <a href="@sUrl">
-                                <img src="@items.PostImage" class="img-responsive" alt="Example blog post alt" style="height:500px">
-                            </a>
-                        </div>
-                        <p class="intro">@items.Abstract</p>
-                        <p class="read-more">
-                            <a href="@sUrl" class="btn btn-default btn-border">Đọc tiếp</a>
-                        </p>
-                    </section>
-                }
-                <div class="col-md-12">
-                    <div class="pull-right">
-                        <div class="pagination">
-                            <ul>
-                                <li><a href="/Post/?page=@(Math.Max(currentPage - 1, 1))">Trước</a></li>
-                                @for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
-                                {
-                                    <li><a href="/Post/?page=@(i)">@i</a></li>
-                                    if (i == Model.PagingInfo.TotalPages)
-                                    {
-                                        currentPage = i - 1;
-                                    }
-                                }                                
-                                <li><a href="/Post/?page=@(currentPage + 1)">Sau</a></li>
-                            </ul>
-                        </div>
-                    </div>
+            <div class="blog-lst col-md-9"></div>
+            <div class="pull-right" style="margin-right:20px">
+                <div class="pagination">
+                    <ul></ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+
+        $(document).ready(function () {
+            loadPosts(1);
+            $('#searchKey').on('input', function () {
+                loadPosts(1);
+            });
+        });
+
+        function loadPosts(page) {
+            var searchKey = $('#searchKey').val();
+            var selectedCategoryId = $('#lunchBegins').val();
+            $.ajax({
+                url: '/Post/GetData?page=' + page,
+                type: 'GET',
+                data: {
+                    categoryId: selectedCategoryId || 0,
+                    searchKey: searchKey
+                },
+                success: function (response) {
+                    var postListHtml = '';
+                    if (response.data.posts.length == 0) {
+                        postListHtml = `
+                        <div class="no-results" style="text-align: center; margin-top: 120px;">
+                            <img src="/web/assets/img/search_found.png" style="width: 600px; height: 400px;" />
+                            <p>Không có bài viết liên quan !</p>
+                        </div>
+                        `;
+                    } else {
+                        var comments = response.cmt;
+
+                        $.each(response.data.posts, function (index, item) {
+                            var cmt = comments.filter(c => c.postId === item.postId);
+                            var sUrl = '/bai-viet/' + item.alias + '-' + item.postId + '.html';
+                            postListHtml += `
+                                                <section class="post">
+                                                    <div class="text-center padding-b-50">
+                                                        <h4 class="wow fadeInLeft animated text-view" style="margin-bottom:20px">${item.postTitle}</h4>
+                                                        <div class="title-line wow fadeInRight animated"></div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <p class="author-category">Đăng bởi <a href="${sUrl}">${item.createdBy}</a></p>
+                                                        </div>
+                                                        <div class="col-sm-6 right">
+                                                            <p class="date-comments">
+                                                                <a href="${sUrl}"><i class="fa fa-calendar-o"></i> ${new Date(item.createdDate).toLocaleDateString('vi-VN')}</a>
+                                                                <a href="${sUrl}"><i class="fa fa-comment-o"></i> ${cmt.length} Bình luận</a>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="image wow fadeInLeft animated">
+                                                        <a href="${sUrl}">
+                                                            <img src="${item.postImage}" class="img-responsive" alt="Example blog post alt" style="height:500px">
+                                                        </a>
+                                                    </div>
+                                                    <p class="intro">${item.abstract}</p>
+                                                    <p class="read-more">
+                                                        <a href="${sUrl}" class="btn btn-default btn-border">Đọc tiếp</a>
+                                                    </p>
+                                                </section>`;
+                        });
+                    }
+                    $('.blog-lst').html(postListHtml);
+                    updatePagination(response.data.pagingInfo);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        function updatePagination(pagingInfo) {
+            var paginationHtml = '';
+
+            if (pagingInfo.hasPreviousPage) {
+                paginationHtml += `
+                <li><a href="#" onclick="handleLoadPosts(${pagingInfo.currentPage - 1}, event)">Trước</a></li>`;
+            }
+
+            for (var i = 1; i <= pagingInfo.totalPages; i++) {
+                paginationHtml += `
+                <li class="${i === pagingInfo.currentPage ? 'active' : ''}">
+                    <a href="#" onclick="handleLoadPosts(${i}, event)">${i}</a>
+                </li>`;
+            }
+
+            if (pagingInfo.hasNextPage) {
+                paginationHtml += `
+                <li><a href="#" onclick="handleLoadPosts(${pagingInfo.currentPage + 1}, event)">Sau</a></li>`;
+            }
+
+            $('.pagination ul').html(paginationHtml);
+        }
+
+        function handleLoadPosts(page, event) {
+            event.preventDefault();
+            loadPosts(page);
+        }
+    </script>
+}

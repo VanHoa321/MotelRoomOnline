@@ -14,10 +14,29 @@ namespace MotelRoomOnline.Controllers
         }
 
         [Route("/phong-tro")]
-        public IActionResult Index(int page = 1)
+        public IActionResult Index()
         {
-            var room = _context.Rooms.Where(i => i.RoomStatusId == 1).OrderByDescending(i => i.RoomId).Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            ViewBag.Account = _context.Accounts.ToList();
+            ViewBag.RCategory = _context.RoomCategories.ToList();
+            ViewBag.Ward = _context.Wards.ToList();
+            return View();
+        }
+
+        public IActionResult GetData(int page = 1, string searchKey = "", int categoryId = 0, int wardId = 0)
+        {
+            var query = _context.Rooms.Where(i => i.RoomStatusId == 1);
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                query = query.Where(i => i.RoomName.Contains(searchKey) || i.Abstract.Contains(searchKey));
+            }
+            if (categoryId > 0)
+            {
+                query = query.Where(i => i.RoomCategoryId == categoryId);
+            }
+            if (wardId > 0)
+            {
+                query = query.Where(i => i.WardId == wardId);
+            }
+            var room = query.OrderByDescending(i => i.RoomId).Skip((page - 1) * pageSize).Take(pageSize).ToList();
             var roomListViewModel = new RoomListViewModel
             {
                 Rooms = room,
@@ -25,10 +44,10 @@ namespace MotelRoomOnline.Controllers
                 {
                     ItemsPerPage = pageSize,
                     CurrentPage = page,
-                    TotalItems = _context.Rooms.Where(i => i.RoomStatusId == 1).Count()
+                    TotalItems = query.Count()
                 }
             };
-            return View(roomListViewModel);
+            return Json(new { data = roomListViewModel });
         }
 
         [Route("/phong-tro/{alias}-{id}.html")]
@@ -44,7 +63,8 @@ namespace MotelRoomOnline.Controllers
             {
                 return NotFound();
             }
-
+            room.ViewCount += 1;
+            _context.SaveChanges();
             ViewBag.Account = _context.Accounts.FirstOrDefault(i => i.AccountId == room.AccountId);
             ViewBag.Image = _context.RoomImages.Where(i => (i.RoomId == room.RoomId) && (i.IsDefault == true)).ToList();
             return View(room);

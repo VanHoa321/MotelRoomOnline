@@ -29,7 +29,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
 
             // Lấy danh sách các dịch vụ hiện tại cho phòng cùng với giá
             var currentServices = await _context.RoomServices
-            .Where(rc => rc.RoomId == roomData.RoomId)
+            .Where(rc => (rc.RoomId == roomData.RoomId && rc.IsActive == true))
             .Select(rc => new { rc.ServiceId, rc.Price })
             .ToListAsync();
 
@@ -69,12 +69,12 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                 .Where(rc => rc.RoomId == roomData.RoomId)
                 .ToListAsync();
 
-            // Xóa các dịch vụ không còn được chọn
+            // Cập nhật các dịch vụ không còn được chọn (IsActive = false)
             foreach (var roomService in currentServices)
             {
                 if (!viewModel.SelectedServicesIds.Contains(roomService.ServiceId))
                 {
-                    _context.RoomServices.Remove(roomService);
+                    roomService.IsActive = false;
                 }
             }
 
@@ -99,6 +99,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                 {
                     // Nếu dịch vụ đã tồn tại, cập nhật giá
                     roomService.Price = viewModel.ServicePrices.ContainsKey(serviceId) ? viewModel.ServicePrices[serviceId] : roomService.Price;
+                    roomService.IsActive = true;
                 }
             }
 

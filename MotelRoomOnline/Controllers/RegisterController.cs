@@ -34,6 +34,8 @@ namespace MotelRoomOnline.Controllers
             account.Password = Functions.MD5Password(account.Password);
             account.Phone = "0123456789";
             account.Status = true;
+            account.CreatedDate = DateTime.Now;
+            account.DOB = DateTime.Now;
             account.RoleID = 3;
             _context.Accounts.Add(account);
             _context.SaveChanges();

@@ -1,0 +1,150 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.Account
+@{
+    ViewData["Title"] = "Thêm mới";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Thêm mới quản trị viên</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý người dùng</li>
+                        <li class="breadcrumb-item active">Thêm mới quản trị viên</li>
+                    </ol>
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(Functions.message))
+            {
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <i class="icon fas fa-exclamation-triangle"></i>@Functions.message
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <form method="post" id="quickForm" asp-action="Create">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="FullName">Họ tên</label>
+                                            <input type="text" asp-for="FullName" class="form-control" placeholder="Nhập họ tên">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Email">Email</label>
+                                            <input type="text" asp-for="Email" class="form-control" placeholder="Nhập Email">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="AccountName">Tên tài khoản</label>
+                                    <input type="text" asp-for="AccountName" class="form-control" placeholder="Nhập tên tài khoản">
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Password">Mật khẩu</label>
+                                    <input type="password" asp-for="Password" class="form-control" placeholder="Nhập mật khẩu" id="Password">
+                                </div>
+                                <div class="form-group">
+                                    <label>Xác nhận mật khẩu</label>
+                                    <input type="password" name="confirmPassword" class="form-control" placeholder="Xác nhận mật khẩu">
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a asp-controller="User" asp-action="ListAdmin" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" title="Lưu"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+@section Scripts{
+    <script src="~/admin/assets/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/admin/assets/plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="~/admin/assets/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/admin/assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    FullName: {
+                        required: true,
+                        minlength: 5,
+                    },
+                    Email: {
+                        required: true,
+                        email: true
+                    },
+                    AccountName: {
+                        required: true,
+                        minlength: 5
+                    },
+                    Password: {
+                        required: true,
+                        minlength: 6
+                    },
+                    confirmPassword: {
+                        required: true,
+                        equalTo: "#Password"
+                    }
+                },
+                messages: {
+                    FullName: {
+                        required: "Họ tên không được để trống",
+                        minlength: "Họ tên phải có ít nhất {0} ký tự"
+                    },
+                    Email: {
+                        required: "Email không được để trống",
+                        email: "Vui lòng nhập đúng định dạng email"
+                    },
+                    AccountName: {
+                        required: "Tên tài khoản không được để trống",
+                        minlength: "Tên tài khoản phải có ít nhất {0} ký tự"
+                    },
+                    Password: {
+                        required: "Mật khẩu không được để trống",
+                        minlength: "Mật khẩu phải có ít nhất {0} ký tự"
+                    },
+                    confirmPassword: {
+                        required: "Xác nhận mật khẩu không được để trống",
+                        equalTo: "Mật khẩu xác nhận không khớp"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            $('.select2').select2()
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+        });
+    </script>
+}

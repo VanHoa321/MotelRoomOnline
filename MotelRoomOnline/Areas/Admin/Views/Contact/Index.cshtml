@@ -1,0 +1,121 @@
+﻿@using MotelRoomOnline.Areas.Admin.Models
+@using MotelRoomOnline.Utilities
+@model IList<Contact>
+
+@{
+    ViewData["Title"] = "Quản lý phản hồi";
+    List<Account> accounts = ViewBag.Account;
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý phản hồi</li>
+                        <li class="breadcrumb-item active">Danh sách phản hồi</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Danh sách phản hồi</h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table id="example-table" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Họ tên</th>
+                                        <th>Email</th>                                      
+                                        <th>SĐT</th>                                      
+                                        <th>Trạng thái</th>
+                                        <th>Chức năng</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="showdata">
+                                    @{
+                                        int i = 1;
+                                    }
+                                    @foreach (var item in Model)
+                                    {
+                                        var acc = accounts.First(i => i.AccountId == item.AccountId);
+                                        <tr id="contact-@item.ContactId">
+                                            <td>@(i++)</td>
+                                            <td><img src="@acc.Avatar" style="width:60px; height:60px" /></td>
+                                            <td>@acc.FullName</td>
+                                            <td>@acc.Email</td>
+                                            <td>@acc.Phone</td>
+                                            <td class="status-column">
+                                                <a href="#"><i class="status-icon bi @((item.IsRead == true) ? "bi-check2 text-success" : "bi-x text-danger")" style="font-size:20px" title="@((item.IsRead == true) ? "Đã đọc" : "Chưa đọc")"></i></a>
+                                            </td>
+                                            <td>
+                                                <a asp-area="Admin" asp-controller="Contact" asp-action="Details"
+                                                   asp-route-id="@item.ContactId" class="btn btn-info btn-sm"
+                                                   title="Xem thông tin"><i class="fa-solid fa-eye"></i></a>
+                                                <a class="btn btn-danger btn-sm btn-delete" data-id="@item.ContactId"
+                                                   title="Xóa phản hồi"><i class="fa-solid fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('body').on('click', '.btn-delete', function () {
+                _id = $(this).data("id");
+                Swal.fire({
+                    title: "Xác nhận xóa phản hồi?",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Xóa",
+                    cancelButtonText: "Hủy"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/Admin/Contact/Delete",
+                            type: "POST",
+                            data: { id: _id },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    toastr.success('Xóa phản hồi thành công');
+                                    $("#contact-" + _id).remove();
+                                }
+                                else {
+                                    toastr.error('Xóa phản hồi không thành công');
+                                }
+                            }
+                        });
+                    }
+                });
+            })
+        });
+    </script>
+}
+
+

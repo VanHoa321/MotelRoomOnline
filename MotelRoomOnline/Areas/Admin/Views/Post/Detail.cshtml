@@ -30,7 +30,7 @@
                             <div class="card-body">                               
                                 <div class="form-group">
                                     <label asp-for="PostTitle">PostTitle</label>
-                                    <input type="text" asp-for="PostTitle" class="form-control" placeholder="Nhập tiêu đề bài viết" readonly>
+                                    <input type="text" asp-for="PostTitle" class="form-control" placeholder="Nhập tiêu đề bài viết">
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="PostCategoryId">PostCategoryId</label>
@@ -40,32 +40,32 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <img src="@Model.PostImage" />
+                                            <img src="@Model.PostImage" style="height:270px;width:90%;margin-top:30px"/>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label asp-for="Abstract">Abstract</label>
-                                            <textarea class="form-control mb-3" asp-for="Abstract" placeholder="Nhập mô tả thêm" style=" height: 270px" readonly></textarea>
+                                            <textarea class="form-control mb-3" asp-for="Abstract" placeholder="Nhập mô tả thêm" style=" height: 270px"></textarea>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label asp-for="Content">Content</label>
-                                    <textarea class="form-control mb-3" asp-for="Content" placeholder="Nhập nội dung bài viết" style=" height: 100px" readonly></textarea>
+                                    <textarea class="form-control mb-3" asp-for="Content" placeholder="Nhập nội dung bài viết" style=" height: 100px"></textarea>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label asp-for="CreatedDate">CreatedDate</label>
-                                            <input type="text" asp-for="CreatedDate" class="form-control" value="@Functions.getCurrenDate()" readonly>
+                                            <input type="text" asp-for="CreatedDate" class="form-control" value="@Functions.getCurrenDate()">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label asp-for="CreatedBy">CreatedBy</label>
-                                            <input type="text" asp-for="CreatedBy" class="form-control" readonly>
+                                            <input type="text" asp-for="CreatedBy" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -78,7 +78,7 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <a asp-controller="Post" asp-action="Index" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <a asp-area="Admin" asp-controller="Post" asp-action="Index" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
                             </div>
                         </form>
                     </div>
