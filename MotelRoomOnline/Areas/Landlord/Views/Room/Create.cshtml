@@ -48,7 +48,16 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label asp-for="RoomStatusId">Trạng thái</label>
-                                            <select asp-for="RoomStatusId" class="form-control select2bs4" asp-items="@(new SelectList(ViewBag.listRoomStatus,"Value","Text"))"></select>
+                                            <select asp-for="RoomStatusId" class="form-control select2bs4">
+                                                @if(Functions.account.PremiumId > 0)
+                                                {
+                                                    <option value="1">Còn trống</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="5">Chờ duyệt</option>
+                                                }
+                                            </select>
                                         </div>
                                     </div>
                                 </div>                    

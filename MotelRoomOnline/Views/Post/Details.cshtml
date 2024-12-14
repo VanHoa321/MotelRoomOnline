@@ -10,59 +10,9 @@
 <div class="content-area blog-page padding-top-40" style="background-color: #FCFCFC; padding-bottom: 55px;">
     <div class="container">
         <div class="row">
-            <div class="blog-asside-right col-md-3" style="margin-top:80px">         
-                <div class="panel panel-default sidebar-menu wow  fadeInRight animated">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Tìm kiếm</h3>
-                    </div>
-                    <div class="panel-body">
-                        <form role="search">
-                            <div class="input-group">
-                                <input class="form-control" placeholder="Nhập thông tin..." type="text">
-                                <span class="input-group-btn">
-                                    <button type="submit" class="btn btn-smal">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </span>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
+            <div class="blog-asside-right col-md-3" style="margin-top:130px">                      
                 @await Component.InvokeAsync("PostNew")
-
-                @await Component.InvokeAsync("RoomNew")
-
-                <div class="panel sidebar-menu wow  fadeInRight animated">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Tags</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="checkbox">
-                                    <label> <input type="checkbox"> Fire Place</label>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12">
-                                <div class="checkbox">
-                                    <label> <input type="checkbox"> Dual Sinks</label>
-                                </div>
-                            </div>
-                            <div class="col-xs-12">
-                                <div class="checkbox">
-                                    <label>  <input type="checkbox"> Jog Path </label>
-                                </div>
-                            </div>
-                            <div class="col-xs-12">
-                                <div class="checkbox">
-                                    <label>  <input type="checkbox"> 26' Ceilings </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @await Component.InvokeAsync("RoomNew")                
             </div>
 
             <div class="blog-lst col-md-9 p0">

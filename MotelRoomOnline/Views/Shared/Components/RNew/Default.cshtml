@@ -1,0 +1,72 @@
+﻿@model IEnumerable<MotelRoomOnline.Models.Room>
+@using MotelRoomOnline.Utilities
+
+<style>
+    .text-view {
+        display: block;
+        display: -webkit-box;
+        -webkit-line-clamp: 1; /* Số dòng hiển thị */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+        .text-view a {
+            display: inline-block;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+</style>
+
+<div class="content-area recent-property" style="background-color: #FCFCFC; padding-bottom: 55px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1 col-sm-12 text-center page-title">
+                <h3 style="margin-bottom:20px">Top phòng trọ mới nhất</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="proerty-th">
+
+                @foreach (var items in Model)
+                {
+                    var sUrl = $"/phong-tro/{items.Alias}-{items.RoomId}.html";
+                    <div class="col-sm-6 col-md-3 p0">
+                        <div class="box-two proerty-item">
+                            <div class="item-thumb">
+                                <a href="@sUrl"><img src="@items.Image" style="max-height:60px"></a>
+                            </div>
+                            <div class="item-entry overflow">
+                                <p class="text-view"><a href="@sUrl">@items.RoomName</a></p>
+                                <div class="dot-hr"></div>
+                                <span class="pull-left">
+                                    <b><i class="bi bi-arrows-move"></i> @items.Acreage m<sup>2</sup></b>
+                                </span>
+                                <span class="proerty-price pull-right">
+                                    <b><i class="bi bi-currency-dollar"></i> @Functions.ToVnd(items.PriceRoom)<sup>đ</sup></b>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="col-sm-6 col-md-3 p0">
+                    <div class="box-tree more-proerty text-center">
+                        <div class="item-tree-icon">
+                            <i class="fa fa-th"></i>
+                        </div>
+                        <div class="more-entry overflow">
+                            <h5><a href="/phong-tro">Xem thêm ? </a></h5>
+                            <h5 class="tree-sub-ttl">Xem tất cả phòng trọ</h5>
+                            <a class="btn border-btn more-black" value="All properties" href="/phong-tro">Xem tiếp</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

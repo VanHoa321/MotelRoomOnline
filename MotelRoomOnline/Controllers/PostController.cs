@@ -24,21 +24,52 @@ namespace MotelRoomOnline.Controllers
 
         public IActionResult GetData(int page = 1, string searchKey = "", int categoryId = 0)
         {
-            var query = _context.Posts.Where(p => p.IsActive == true);
+            var query = from p in _context.Posts
+                        join a in _context.Accounts on p.AccountId equals a.AccountId
+                        where p.IsActive == true
+                        select new
+                        {
+                            Post = p,
+                            PremiumId = a.PremiumId
+                        };
+
             if (!string.IsNullOrEmpty(searchKey))
             {
-                query = query.Where(p => p.PostTitle.Contains(searchKey) || p.Abstract.Contains(searchKey));
+                query = query.Where(p => p.Post.PostTitle.Contains(searchKey) || p.Post.Abstract.Contains(searchKey));
             }
+
             if (categoryId > 0)
             {
-                query = query.Where(p => p.PostCategoryId == categoryId);
+                query = query.Where(p => p.Post.PostCategoryId == categoryId);
             }
-            var post = query.OrderByDescending(p => p.PostId).Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            var accounts = _context.Accounts.ToList();
-            var comment = _context.PostComments.ToList();
+
+            // Sắp xếp theo PremiumId giảm dần, sau đó theo PostId giảm dần
+            var sortedQuery = query
+                .OrderByDescending(p => p.PremiumId)
+                .ThenByDescending(p => p.Post.PostId);
+
+            // Lấy bài viết phân trang
+            var posts = sortedQuery
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => p.Post)
+                .ToList();
+
+            // Lấy tài khoản liên quan
+            var accountIds = posts.Select(p => p.AccountId).Distinct().ToList();
+            var accounts = _context.Accounts
+                .Where(a => accountIds.Contains(a.AccountId))
+                .ToList();
+
+            // Lấy bình luận liên quan
+            var postIds = posts.Select(p => p.PostId).Distinct().ToList();
+            var comments = _context.PostComments
+                .Where(c => postIds.Contains(c.PostId))
+                .ToList();
+
             var postListViewModel = new PostListViewModel
             {
-                Posts = post,
+                Posts = posts,
                 PagingInfo = new PagingInfo
                 {
                     ItemsPerPage = pageSize,
@@ -46,7 +77,7 @@ namespace MotelRoomOnline.Controllers
                     TotalItems = query.Count()
                 }
             };
-            return Json(new { data = postListViewModel, acc = accounts, cmt = comment });
+            return Json(new { data = postListViewModel, acc = accounts, cmt = comments });
         }
 
         [Route("/bai-viet/{alias}-{id}.html")]

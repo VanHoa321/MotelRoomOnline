@@ -2,6 +2,7 @@
 @model MotelRoomOnline.Models.Room
 @{
     ViewData["Title"] = "Chỉnh sửa phòng";
+    RoomStatus status = ViewBag.roomStatus;
 }
 
 <div class="content-wrapper">
@@ -49,7 +50,9 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label asp-for="RoomStatusId">Trạng thái</label>
-                                            <select asp-for="RoomStatusId" class="form-control select2bs4" asp-items="@(new SelectList(ViewBag.listRoomStatus,"Value","Text"))"></select>
+                                            <select asp-for="RoomStatusId" class="form-control select2bs4">
+                                                <option value="@status.RoomStatusId">@status.RoomStatusName</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

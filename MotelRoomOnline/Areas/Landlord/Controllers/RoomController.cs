@@ -120,20 +120,10 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                 Value = "0"
             });
 
-            var listRoomStatus = (from r in _context.RoomStatuses.Where(r => r.IsActive == true)
-                                  select new SelectListItem()
-                                  {
-                                      Text = r.RoomStatusName,
-                                      Value = r.RoomStatusId.ToString(),
-                                  }).ToList();
-            listRoomStatus.Insert(0, new SelectListItem()
-            {
-                Text = "Chọn trạng thái",
-                Value = "0"
-            });
+            var roomStatus = _context.RoomStatuses.FirstOrDefault(r => r.RoomStatusId == item.RoomStatusId);
             ViewBag.listWard = listWard;
             ViewBag.listRoomCategories = listRoomCategories;
-            ViewBag.listRoomStatus = listRoomStatus;
+            ViewBag.roomStatus = roomStatus;
             return View(item);
         }
 

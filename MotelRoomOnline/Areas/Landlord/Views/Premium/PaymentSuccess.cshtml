@@ -1,0 +1,57 @@
+﻿@using MotelRoomOnline.Utilities
+@model MotelRoomOnline.Models.Packages
+
+@{
+    ViewData["Title"] = "Thanh toán thành công";
+}
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6"></div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý tài khoản</li>
+                        <li class="breadcrumb-item active">Thanh toán thành công</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">Thanh toán thành công</h3>
+                        </div>
+                        <div class="container my-1">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="card-body text-center p-4">
+                                        <div class="text-success mb-2">
+                                            <i class="bi bi-check-circle-fill" style="font-size: 7rem;"></i>
+                                        </div>
+                                        <div class="mb-4 text-center">
+                                            <h5 class="fw-bold">Thông Tin Gói Đã Mua</h5>
+                                            <p>Gói: <strong>@Model.Name</strong></p>
+                                            <p>Thời gian sử dụng: <strong>@Model.DurationDays ngày</strong></p>
+                                            <p>Số tiền: <strong>@Functions.ToVnd(Model.Price) VND</strong></p>
+                                        </div>
+                                        <p class="text-muted">Cảm ơn bạn đã nâng cấp tài khoản. Chúc bạn trải nghiệm dịch vụ tuyệt vời!</p>
+                                        <a href="/Landlord/Home/Index" class="btn btn-success mt-3">Trở về Trang chủ</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+

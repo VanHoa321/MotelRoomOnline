@@ -49,19 +49,26 @@
                         <img src="@(Functions.account?.Avatar != null ? Functions.account.Avatar : Url.Content("~/files_landlord/img/avart_null.jpg"))" alt="User Avatar" class="img-size-50 mr-3 img-circle" style="margin-top:-8px; width:40px; height:40px">
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header text-success">@Functions.account?.FullName</span>
+                        <span class="dropdown-item dropdown-header text-success">@Functions.account?.FullName @(Functions.account?.PremiumId > 0 ? " (Premium)" : "")</span>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
+                        <a class="dropdown-item">
                             <i class="fas fa-envelope mr-3"></i>@Functions.account?.Email
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
+                        <a class="dropdown-item">
                             <i class="fas fa-phone mr-3"></i>@Functions.account?.Phone
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
+                        <a class="dropdown-item">
                             <i class="fa-solid fa-cake-candles mr-3"></i>@Functions.account?.DOB.Value.ToString("dd/MM/yyyy")
                         </a>
+                        <div class="dropdown-divider"></div>
+                        @if (Functions.account.PremiumId > 0)
+                        {
+                            <a href="#" class="dropdown-item text-center">
+                                <span class="text-danger">Hết hạn Premium: @Functions.account?.ExpiryDate.Value.ToString("dd/MM/yyyy")</span>
+                            </a>
+                        }
                         <div class="dropdown-divider"></div>
                         <a href="/Landlord/Profile/Index" class="dropdown-item dropdown-footer text-primary">Chi tiết</a>
                         <div class="dropdown-divider"></div>
@@ -146,6 +153,116 @@
                         "previous": "Trước"
                     }
                 },
+            });
+        });
+
+        $(function () {
+            $('#example-table-2').DataTable({
+                pageLength: 10,
+                language: {
+                    "lengthMenu": "Hiển thị _MENU_ mục",
+                    "search": "Tìm kiếm:",
+                    "zeroRecords": "Không tìm thấy dữ liệu",
+                    "info": "Hiển thị từ _START_ đến _END_ của _TOTAL_ mục",
+                    "infoEmpty": "Hiển thị từ 0 đến 0 của 0 mục",
+                    "infoFiltered": "(được lọc từ _MAX_ tổng số mục)",
+                    "paginate": {
+                        "first": "Đầu",
+                        "last": "Cuối",
+                        "next": "Tiếp",
+                        "previous": "Trước"
+                    }
+                },
+                lengthMenu: [2, 5, 10, 25, 50, 100],
+                pageLength: 2
+            });
+        });
+
+        $(function () {
+            $('#example-table-3').DataTable({
+                pageLength: 10,
+                language: {
+                    "lengthMenu": "Hiển thị _MENU_ mục",
+                    "search": "Tìm kiếm:",
+                    "zeroRecords": "Không tìm thấy dữ liệu",
+                    "info": "Hiển thị từ _START_ đến _END_ của _TOTAL_ mục",
+                    "infoEmpty": "Hiển thị từ 0 đến 0 của 0 mục",
+                    "infoFiltered": "(được lọc từ _MAX_ tổng số mục)",
+                    "paginate": {
+                        "first": "Đầu",
+                        "last": "Cuối",
+                        "next": "Tiếp",
+                        "previous": "Trước"
+                    }
+                },
+                lengthMenu: [3, 5, 10, 25, 50, 100],
+                pageLength: 3
+            });
+        });
+
+        $(function () {
+            $('#example-table-4').DataTable({
+                pageLength: 10,
+                language: {
+                    "lengthMenu": "Hiển thị _MENU_ mục",
+                    "search": "Tìm kiếm:",
+                    "zeroRecords": "Không tìm thấy dữ liệu",
+                    "info": "Hiển thị từ _START_ đến _END_ của _TOTAL_ mục",
+                    "infoEmpty": "Hiển thị từ 0 đến 0 của 0 mục",
+                    "infoFiltered": "(được lọc từ _MAX_ tổng số mục)",
+                    "paginate": {
+                        "first": "Đầu",
+                        "last": "Cuối",
+                        "next": "Tiếp",
+                        "previous": "Trước"
+                    }
+                },
+                lengthMenu: [5, 10, 25, 50, 100],
+                pageLength: 5
+            });
+        });
+
+        $(function () {
+            $('#example-table-5').DataTable({
+                pageLength: 10,
+                language: {
+                    "lengthMenu": "Hiển thị _MENU_ mục",
+                    "search": "Tìm kiếm:",
+                    "zeroRecords": "Không tìm thấy dữ liệu",
+                    "info": "Hiển thị từ _START_ đến _END_ của _TOTAL_ mục",
+                    "infoEmpty": "Hiển thị từ 0 đến 0 của 0 mục",
+                    "infoFiltered": "(được lọc từ _MAX_ tổng số mục)",
+                    "paginate": {
+                        "first": "Đầu",
+                        "last": "Cuối",
+                        "next": "Tiếp",
+                        "previous": "Trước"
+                    }
+                },
+                lengthMenu: [2, 5, 10, 25, 50, 100],
+                pageLength: 2
+            });
+        });
+
+        $(function () {
+            $('#example-table-6').DataTable({
+                pageLength: 10,
+                language: {
+                    "lengthMenu": "Hiển thị _MENU_ mục",
+                    "search": "Tìm kiếm:",
+                    "zeroRecords": "Không tìm thấy dữ liệu",
+                    "info": "Hiển thị từ _START_ đến _END_ của _TOTAL_ mục",
+                    "infoEmpty": "Hiển thị từ 0 đến 0 của 0 mục",
+                    "infoFiltered": "(được lọc từ _MAX_ tổng số mục)",
+                    "paginate": {
+                        "first": "Đầu",
+                        "last": "Cuối",
+                        "next": "Tiếp",
+                        "previous": "Trước"
+                    }
+                },
+                lengthMenu: [3, 5, 10, 25, 50, 100],
+                pageLength: 3
             });
         });
     </script>

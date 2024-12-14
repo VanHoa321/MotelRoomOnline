@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MotelRoomOnline.Models;
+using MotelRoomOnline.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +13,11 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+builder.Services.AddSingleton<IVnPayService, VnPayService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
-
+builder.Services.AddHostedService<PremiumAccountChecker>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

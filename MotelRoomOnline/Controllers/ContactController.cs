@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MotelRoomOnline.Models;
+using MotelRoomOnline.Services;
 
 namespace MotelRoomOnline.Controllers
 {

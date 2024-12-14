@@ -82,19 +82,32 @@
                             </table>
                             <h4 class="text-info mt-4">Thông tin hợp đồng</h4>
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Ngày tạo</label>
                                         <input type="text" class="form-control" value="@Model.CreatedDate.ToString("dd/MM/yyyy")" readonly>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Ngày kết thúc</label>
+                                        @if (Model.EndDate != null)
+                                        {
+                                            <input type="text" class="form-control" value="@Model.EndDate.Value.ToString("dd/MM/yyyy")" readonly>
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control" value="Chưa cập nhật" readonly>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Giá thuê</label>
                                         <input type="text" class="form-control" value="@Functions.ToVnd(Model.PriceRoom) đ/Tháng" readonly>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Tiền cọc</label>
                                         <input type="text" class="form-control" value="@Functions.ToVnd(Model.DepositAmount) đ" readonly>

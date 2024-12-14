@@ -49,7 +49,14 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
             {
                 create.Alias = Functions.TitleSlugGenerationAlias(create.PostTitle);
                 create.AccountId = Functions.account.AccountId;
-                create.IsActive = false;
+                if(Functions.account.PremiumId > 0)
+                {
+                    create.IsActive = true;
+                }
+                else
+                {
+                    create.IsActive = false;
+                }
                 _context.Posts.Add(create);
                 _context.SaveChanges();
                 return RedirectToAction("Index");

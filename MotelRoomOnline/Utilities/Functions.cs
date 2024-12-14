@@ -10,6 +10,7 @@ namespace MotelRoomOnline.Utilities
         public static long RoomId { get; set; }
         public static long ContractId { get; set; }
         public static long DetailId { get; set; }
+        public static int PackageId { get; set; }
 
         public static string message = string.Empty;
 
@@ -63,6 +64,11 @@ namespace MotelRoomOnline.Utilities
         }
 
         public static string ToVnd(decimal donGia)
+        {
+            return donGia.ToString("#,##0");
+        }
+
+        public static string ToVnd(double donGia)
         {
             return donGia.ToString("#,##0");
         }

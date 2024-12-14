@@ -34,5 +34,10 @@ namespace MotelRoomOnline.Models
         public bool? Status { get; set; }
 
         public int RoleID { get; set; }
+
+        public int? PremiumId { get; set; }
+
+        public DateTime? ExpiryDate { get; set; }
+
     }
 }

@@ -23,23 +23,41 @@ namespace MotelRoomOnline.Controllers
 
         public IActionResult GetData(int page = 1, string searchKey = "", int categoryId = 0, int wardId = 0)
         {
-            var query = _context.Rooms.Where(i => i.RoomStatusId == 1);
+            var query = _context.Rooms
+            .Join(
+                _context.Accounts,
+                room => room.AccountId,
+                account => account.AccountId,
+                (room, account) => new { Room = room, PremiumId = account.PremiumId }
+            )
+            .Where(x => x.Room.RoomStatusId == 1);
+
             if (!string.IsNullOrEmpty(searchKey))
             {
-                query = query.Where(i => i.RoomName.Contains(searchKey) || i.Abstract.Contains(searchKey));
+                query = query.Where(x => x.Room.RoomName.Contains(searchKey) || x.Room.Abstract.Contains(searchKey));
             }
+
             if (categoryId > 0)
             {
-                query = query.Where(i => i.RoomCategoryId == categoryId);
+                query = query.Where(x => x.Room.RoomCategoryId == categoryId);
             }
+
             if (wardId > 0)
             {
-                query = query.Where(i => i.WardId == wardId);
+                query = query.Where(x => x.Room.WardId == wardId);
             }
-            var room = query.OrderByDescending(i => i.RoomId).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var roomList = query
+                .OrderByDescending(x => x.PremiumId) // Sắp xếp theo PremiumId của chủ trọ
+                .ThenByDescending(x => x.Room.RoomId) // Sắp xếp tiếp theo RoomId
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => x.Room) // Chỉ lấy thông tin phòng
+                .ToList();
+
             var roomListViewModel = new RoomListViewModel
             {
-                Rooms = room,
+                Rooms = roomList,
                 PagingInfo = new PagingInfo
                 {
                     ItemsPerPage = pageSize,
@@ -47,6 +65,7 @@ namespace MotelRoomOnline.Controllers
                     TotalItems = query.Count()
                 }
             };
+
             return Json(new { data = roomListViewModel });
         }
 
@@ -58,7 +77,6 @@ namespace MotelRoomOnline.Controllers
                 return NotFound();
             }
             var room = _context.Rooms.FirstOrDefault(i => (i.RoomId == id) && (i.RoomStatusId == 1));
-
             if (room == null)
             {
                 return NotFound();
@@ -67,6 +85,11 @@ namespace MotelRoomOnline.Controllers
             _context.SaveChanges();
             ViewBag.Account = _context.Accounts.FirstOrDefault(i => i.AccountId == room.AccountId);
             ViewBag.Image = _context.RoomImages.Where(i => (i.RoomId == room.RoomId) && (i.IsDefault == true)).ToList();
+            ViewBag.RelatedMotel = _context.Rooms.Where(i => (i.AccountId == room.AccountId) || (i.RoomCategoryId == room.RoomCategoryId) || (i.WardId == i.WardId) || (i.RoomStatusId == 1)).ToList();
+            ViewBag.RoomService = _context.RoomServices.Where(i => (i.RoomId == id) && (i.IsActive == true)).ToList();
+            ViewBag.RoomCriteria = _context.RoomCriterias.Where(i => (i.RoomId == id) && (i.IsActive == true)).ToList();
+            ViewBag.Service = _context.Services.ToList();
+            ViewBag.Criteria = _context.Criterias.ToList();
             return View(room);
         }
     }

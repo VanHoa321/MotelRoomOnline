@@ -184,6 +184,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
             }
 
             contract.Status = 0;
+            contract.EndDate = DateTime.Now;
             var room = _context.Rooms.Find(contract.RoomId);
             if (room != null)
             {

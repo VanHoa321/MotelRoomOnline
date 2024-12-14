@@ -5,11 +5,25 @@
     ViewData["Title"] = "Chi tiết";
     Account account = ViewBag.Account;
     List<RoomImage> imgList = ViewBag.Image;
+    List<Room> related = ViewBag.RelatedMotel;
+    List<RoomService> roomServices = ViewBag.RoomService;
+    List<RoomCriteria> roomCriterias = ViewBag.RoomCriteria;
+    List<Service> services = ViewBag.Service;
+    List<Criteria> criterias = ViewBag.Criteria;
 }
 <style>
     .swiper-slide img {
         width: 100%;
         height: 500px;
+    }
+
+    .text-view {
+        display: block;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
 <div class="content-area single-property" style="background-color: #FCFCFC;">
@@ -130,125 +144,81 @@
 
                             </div>
                         </div>
-                    </div>
-                    
+                    </div>                 
                     <div class="panel panel-default sidebar-menu wow fadeInRight animated">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Tìm kiếm trọ</h3>
+                            <h3 class="panel-title">Dịch vụ và Tiện ích trọ</h3>
                         </div>
                         <div class="panel-body search-widget">
-                            <form action="" class=" form-inline">
-                                <fieldset>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <input type="text" class="form-control" placeholder="Nhập thông tin...">
+                            <fieldset class="padding-5">
+                                <div class="row">
+                                    @if ((roomServices == null || !roomServices.Any()) && (roomCriterias == null || !roomCriterias.Any()))
+                                    {
+                                        <h4 class="text-center">Chưa cập nhật thông tin</h4>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-xs-6">
+                                            <h4 style="margin-left:20px">Tiện ích</h4>
+                                            @foreach (var criteria in roomCriterias)
+                                            {
+                                                var name = criterias.FirstOrDefault(i => i.CriteriaId == criteria.CriteriaId);
+                                                <div class="checkbox" style="margin-bottom: 10px">
+                                                    <label>
+                                                        <i class="fa fa-check" aria-hidden="true" style="color: #FFD700;font-size: 24px"></i> <span style="font-size:16px">@name.CriteriaName</span>
+                                                    </label>
+                                                </div>
+                                            }
                                         </div>
-                                    </div>
-                                </fieldset>
-
-                                <fieldset>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <select id="lunchBegins" class="selectpicker" data-live-search="true" data-live-search-style="begins">
-                                                <option>Chọn khu vực</option>
-                                                <option>New york, CA</option>
-                                                <option>Paris</option>
-                                                <option>Casablanca</option>
-                                                <option>Tokyo</option>
-                                                <option>Marraekch</option>
-                                                <option>kyoto , shibua</option>
-                                            </select>
+                                        <div class="col-xs-6">
+                                            <h4 style="margin-left:20px">Dịch vụ</h4>
+                                            @foreach (var service in roomServices)
+                                            {
+                                                var name = services.FirstOrDefault(i => i.ServiceId == service.ServiceId);
+                                                <div class="checkbox" style="margin-bottom: 10px">
+                                                    <label style="font:100px">
+                                                        <i class="fa fa-check" aria-hidden="true" style="color: #FFD700;font-size: 24px"></i> <span style="font-size:16px">@name.ServiceName</span>
+                                                    </label>
+                                                </div>
+                                            }
                                         </div>
-                                    </div>
-                                </fieldset>
-
-                                <fieldset class="padding-5">
-                                    <div class="row">
-                                        <div class="col-xs-12" style="margin-bottom:10px">
-                                            <div class="checkbox">
-                                                <label> <input type="checkbox"> Fire Place</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xs-12" style="margin-bottom:10px">
-                                            <div class="checkbox">
-                                                <label> <input type="checkbox"> Dual Sinks</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12" style="margin-bottom:10px">
-                                            <div class="checkbox">
-                                                <label>  <input type="checkbox"> Jog Path </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12" style="margin-bottom:10px">
-                                            <div class="checkbox">
-                                                <label>  <input type="checkbox"> 26' Ceilings </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </fieldset>
-
-                                <fieldset>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <input class="button btn largesearch-btn" value="Tìm" type="submit">
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </form>
+                                    }
+                                </div>
+                            </fieldset>
                         </div>
                     </div>
                 </aside>
-
             </div>
-
         </div>
         <div class="similar-post-section padding-top-40">
             <div id="prop-smlr-slide_0">
-                <div class="box-two proerty-item">
-                    <div class="item-thumb">
-                        <a href="property-1.html"><img src="~/web/assets/img/similar/property-1.jpg"></a>
+                @foreach(var item in related)
+                {
+                    var sUrl = $"/phong-tro/{item.Alias}-{item.RoomId}.html";
+                    <div class="box-two proerty-item">
+                        <div class="item-thumb">
+                            <a href="@sUrl"><img src="@item.Image" style="width:100% ;height:300px"></a>
+                        </div>
+                        <div class="item-entry overflow">
+                            <h6 class="text-view"><a href="@sUrl">@item.RoomName</a></h6>
+                            <div class="dot-hr"></div>
+                            <span class="pull-left">
+                                <b><i class="bi bi-arrows-move" style="font-size: 20px; color: #FDC600"></i> @item.Acreage m<sup>2</sup></b>
+                            </span>
+                            <span class="proerty-price pull-right">
+                                <i class="bi bi-currency-dollar" style="font-size: 20px; color: #FDC600"></i> @item.PriceRoom<sup>đ</sup>
+                            </span>
+                            <div class="property-icon">
+                                <span class="pull-left">
+                                    <i class="bi bi-eye" style="font-size: 20px; color: #FDC600"></i><b> @item.ViewCount</b>
+                                </span>
+                                <span class="pull-right">
+                                    <i class="bi bi-people" style="font-size: 20px; color: #FDC600"></i><b> @item.MaxPeople</b>
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="item-entry overflow">
-                        <h5><a href="property-1.html"> Super nice villa </a></h5>
-                        <div class="dot-hr"></div>
-                        <span class="pull-left"><b> Area :</b> 120m </span>
-                        <span class="proerty-price pull-right"> $ 300,000</span>
-                    </div>
-                </div>
-                <div class="box-two proerty-item">
-                    <div class="item-thumb">
-                        <a href="property-1.html"><img src="~/web/assets/img/similar/property-2.jpg"></a>
-                    </div>
-                    <div class="item-entry overflow">
-                        <h5><a href="property-1.html"> Super nice villa </a></h5>
-                        <div class="dot-hr"></div>
-                        <span class="pull-left"><b> Area :</b> 120m </span>
-                        <span class="proerty-price pull-right"> $ 300,000</span>
-                    </div>
-                </div>
-                <div class="box-two proerty-item">
-                    <div class="item-thumb">
-                        <a href="property-1.html"><img src="~/web/assets/img/similar/property-3.jpg"></a>
-                    </div>
-                    <div class="item-entry overflow">
-                        <h5><a href="property-1.html"> Super nice villa </a></h5>
-                        <div class="dot-hr"></div>
-                        <span class="pull-left"><b> Area :</b> 120m </span>
-                        <span class="proerty-price pull-right"> $ 300,000</span>
-                    </div>
-                </div>
-                <div class="box-two proerty-item">
-                    <div class="item-thumb">
-                        <a href="property-1.html"><img src="~/web/assets/img/similar/property-1.jpg"></a>
-                    </div>
-                    <div class="item-entry overflow">
-                        <h5><a href="property-1.html"> Super nice villa </a></h5>
-                        <div class="dot-hr"></div>
-                        <span class="pull-left"><b> Area :</b> 120m </span>
-                        <span class="proerty-price pull-right"> $ 300,000</span>
-                    </div>
-                </div>
+                }               
             </div>
         </div>
     </div>

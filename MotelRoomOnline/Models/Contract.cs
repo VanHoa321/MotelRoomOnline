@@ -15,6 +15,8 @@ namespace MotelRoomOnline.Models
 
         public DateTime CreatedDate { get; set; }
 
+        public DateTime? EndDate { get; set; }
+
         public decimal PriceRoom { get; set; }
 
         public decimal DepositAmount { get; set; }

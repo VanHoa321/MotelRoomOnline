@@ -1,0 +1,142 @@
+﻿
+@{
+    ViewData["Title"] = "Nâng cấp tài khoản";
+    List<RoomStatus> list = ViewBag.roomStatus;
+}
+
+<style>
+    .package-card {
+        margin-bottom: 30px;
+    }
+
+    .package-price {
+        font-size: 32px;
+        font-weight: bold;
+        color: #FFD700;
+    }
+
+    .package-duration {
+        font-size: 18px;
+        color: #6c757d;
+    }
+
+    .btn-upgrade {
+        background-color: #3085d6;
+        color: white;
+        font-weight: bold;
+    }
+
+    .benefits-list li {
+        font-size: 16px;
+    }
+</style>
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h4>Nâng cấp tài khoản</h4>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">Quản lý tài khoản</li>
+                        <li class="breadcrumb-item active">Đăng ký Premium</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">Nâng cấp tài khoản - Ưu đãi thả ga</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mt-4">
+                                <div class="col-sm-4">
+                                    <div class="position-relative p-3 bg-white" style="border: 1px solid #ddd; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); height: 410px;">
+                                        <div class="ribbon-wrapper ribbon-lg">
+                                            <div class="ribbon bg-orange text-lg">
+                                                <span class="text-white">Cơ bản</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <div class="package-price">
+                                                200,000đ
+                                            </div>
+                                            <div class="package-duration text-info mb-2">
+                                                30 ngày
+                                            </div>
+                                            <ul class="list-group list-group-flush benefits-list">
+                                                <li class="list-group-item">Đăng bài giới thiệu không giới hạn</li>
+                                                <li class="list-group-item">Không cần chờ duyệt trọ đăng</li>
+                                                <li class="list-group-item">Gắn nhãn "Đã xác minh" cho trọ</li>
+                                                <li class="list-group-item">Ưu tiên tìm kiếm mức độ 3</li>
+                                            </ul>
+                                            <a href="/Landlord/Premium/Upgrade?id=1" class="btn btn-upgrade w-100 mt-3">Nâng Cấp</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="position-relative p-3 bg-white" style="border: 1px solid #ddd; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); height: 410px;">
+                                        <div class="ribbon-wrapper ribbon-lg">
+                                            <div class="ribbon bg-danger text-lg">
+                                                Tiết kiệm
+                                            </div>
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <div class="package-price">
+                                                500,000đ
+                                            </div>
+                                            <div class="package-duration text-info mb-2">
+                                                90 ngày
+                                            </div>
+                                            <ul class="list-group list-group-flush benefits-list">
+                                                <li class="list-group-item">Đăng bài giới thiệu không giới hạn</li>
+                                                <li class="list-group-item">Không cần chờ duyệt trọ đăng</li>
+                                                <li class="list-group-item">Gắn nhãn "Đã xác minh" cho trọ</li>
+                                                <li class="list-group-item">Ưu tiên tìm kiếm mức độ 2</li>
+                                            </ul>
+                                            <a href="/Landlord/Premium/Upgrade?id=2" class="btn btn-upgrade w-100 mt-3">Nâng Cấp</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="position-relative p-3 bg-white" style="border: 1px solid #ddd; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); height: 410px;">
+                                        <div class="ribbon-wrapper ribbon-lg">
+                                            <div class="ribbon bg-success text-lg">
+                                                Siêu ưu đãi
+                                            </div>
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <div class="package-price">
+                                                900,000đ
+                                            </div>
+                                            <div class="package-duration text-info mb-2">
+                                                180 ngày
+                                            </div>
+                                            <ul class="list-group list-group-flush benefits-list">
+                                                <li class="list-group-item">Đăng bài giới thiệu không giới hạn</li>
+                                                <li class="list-group-item">Không cần chờ duyệt trọ đăng</li>
+                                                <li class="list-group-item">Gắn nhãn "Đã xác minh" cho trọ</li>
+                                                <li class="list-group-item">Ưu tiên tìm kiếm mức độ 1</li>
+                                            </ul>
+                                            <a href="/Landlord/Premium/Upgrade?id=3" class="btn btn-upgrade w-100 mt-3">Nâng Cấp</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+
