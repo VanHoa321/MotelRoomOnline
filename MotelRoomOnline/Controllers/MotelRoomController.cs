@@ -21,7 +21,7 @@ namespace MotelRoomOnline.Controllers
             return View();
         }
 
-        public IActionResult GetData(int page = 1, string searchKey = "", int categoryId = 0, int wardId = 0)
+        public IActionResult GetData(int page = 1, string searchKey = "", int categoryId = 0, int wardId = 0, decimal minPrice = 0, decimal maxPrice = 0, int minAcreage = 0, int maxAcreage = 0)
         {
             var query = _context.Rooms
             .Join(
@@ -47,12 +47,31 @@ namespace MotelRoomOnline.Controllers
                 query = query.Where(x => x.Room.WardId == wardId);
             }
 
+            if (minPrice > 0)
+            {
+                query = query.Where(x => x.Room.PriceRoom >= minPrice);
+            }
+            if (maxPrice > 0)
+            {
+                query = query.Where(x => x.Room.PriceRoom <= maxPrice);
+            }
+
+            if (minAcreage > 0)
+            {
+                query = query.Where(x => x.Room.Acreage >= minAcreage);
+            }
+
+            if (maxAcreage > 0)
+            {
+                query = query.Where(x => x.Room.Acreage <= maxAcreage);
+            }
+
             var roomList = query
                 .OrderByDescending(x => x.PremiumId) // Sắp xếp theo PremiumId của chủ trọ
                 .ThenByDescending(x => x.Room.RoomId) // Sắp xếp tiếp theo RoomId
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(x => x.Room) // Chỉ lấy thông tin phòng
+                .Select(x => x.Room)
                 .ToList();
 
             var roomListViewModel = new RoomListViewModel

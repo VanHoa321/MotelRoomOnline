@@ -52,19 +52,27 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                 .ToList();
 
             var currentYear = DateTime.Now.Year;
-            var monthlyStatistics = _context.Invoices.Where(i => i.InvoiceDate.Year == currentYear).GroupBy(i => i.InvoiceDate.Month)
-                .Select(g => new
-                {
-                    Month = g.Key,
-                    TotalAmount = g.Sum(i => i.TotalAmount)
-                })
-            .OrderBy(m => m.Month)
-            .ToList();
+            var monthlyStatistics = (from invoice in _context.Invoices
+                                     join contract in _context.Contracts
+                                         on invoice.ContractId equals contract.ContractId
+                                     join customer in _context.Customers
+                                         on contract.CustomerId equals customer.CustomerId
+                                     where invoice.InvoiceDate.Year == currentYear &&
+                                           customer.AccountId == Functions.account.AccountId
+                                     group invoice by invoice.InvoiceDate.Month into grouped
+                                     select new
+                                     {
+                                         Month = grouped.Key,
+                                         TotalAmount = grouped.Sum(i => i.TotalAmount)
+                                     })
+                      .OrderBy(m => m.Month)
+                      .ToList();
+
             var statistics = Enumerable.Range(1, 12).Select(month => new
             {
                 Month = month,
                 TotalAmount = monthlyStatistics.FirstOrDefault(m => m.Month == month)?.TotalAmount ?? 0
-            }).ToList();         
+            }).ToList();
 
             ViewBag.TopRooms = JsonConvert.SerializeObject(topRooms);
             ViewBag.Statistics = JsonConvert.SerializeObject(statistics);
@@ -192,18 +200,22 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
             var currentYear = DateTime.Now.Year;
 
             // Lấy số tháng thuê cho từng tháng trong năm hiện tại
-            var monthlyRentalStatistics = _context.RentalMonths
-                .Where(rm => rm.StartDate.Year == currentYear)                
-                .GroupBy(rm => rm.StartDate.Month)
-                .Select(g => new
-                {
-                    Month = g.Key,
-                    TotalRentalMonths = g.Count()
-                })
-                .OrderBy(m => m.Month)
-                .ToList();
+            var monthlyRentalStatistics = (from rentalMonth in _context.RentalMonths
+                                           join contract in _context.Contracts
+                                               on rentalMonth.ContractId equals contract.ContractId
+                                           join customer in _context.Customers
+                                               on contract.CustomerId equals customer.CustomerId
+                                           where rentalMonth.StartDate.Year == currentYear &&
+                                                 customer.AccountId == Functions.account.AccountId
+                                           group rentalMonth by rentalMonth.StartDate.Month into grouped
+                                           select new
+                                           {
+                                               Month = grouped.Key,
+                                               TotalRentalMonths = grouped.Count()
+                                           })
+                                .OrderBy(m => m.Month)
+                                .ToList();
 
-            // Tạo danh sách cho tất cả 12 tháng
             var statistics = Enumerable.Range(1, 12).Select(month => new
             {
                 Month = month,

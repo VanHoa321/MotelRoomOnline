@@ -63,7 +63,39 @@
                                         </select>
                                     </div>
                                 </div>
-                            </fieldset>                            
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <input id="minPrice" type="number" class="form-control" placeholder="Nhập giá trọ tối thiểu...">
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <input id="maxPrice" type="number" class="form-control" placeholder="Nhập giá trọ tối đa...">
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <input id="minAcreage" type="number" class="form-control" placeholder="Nhập diện tích tối thiểu...">
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <input id="maxAcreage" type="number" class="form-control" placeholder="Nhập diện tích tối đa...">
+                                    </div>
+                                </div>
+                            </fieldset>
                         </div>
                     </div>
                     @await Component.InvokeAsync("RoomNew")
@@ -95,19 +127,43 @@
             $('#searchKey').on('input change', function () {
                 loadRooms(1);
             });
+
+            $('#minPrice').on('input change', function () {
+                loadRooms(1);
+            });
+
+            $('#maxPrice').on('input change', function () {
+                loadRooms(1);
+            });
+
+            $('#minAcreage').on('input change', function () {
+                loadRooms(1);
+            });
+
+            $('#maxAcreage').on('input change', function () {
+                loadRooms(1);
+            });
         });
 
         function loadRooms(page) {
             var searchKey = $('#searchKey').val();
             var selectedCategoryId = $('#Rcategories').val();
             var selectedWardId = $('#lunchBegins').val();
+            var minPrice = $('#minPrice').val();
+            var maxPrice = $('#maxPrice').val();
+            var minAcreage = $('#minAcreage').val();
+            var maxAcreage = $('#maxAcreage').val();
             $.ajax({
                 url: '/MotelRoom/GetData?page=' + page,
                 type: 'GET',
                 data: {
                     categoryId: selectedCategoryId || 0,
                     wardId: selectedWardId || 0,
-                    searchKey: searchKey
+                    searchKey: searchKey,
+                    minPrice: minPrice || 0,
+                    maxPrice: maxPrice || 0,
+                    minAcreage: minAcreage || 0,
+                    maxAcreage: maxAcreage || 0
                 },
                 success: function (response) {
                     var roomListHtml = '';
@@ -183,4 +239,6 @@
             loadRooms(page);
         }
     </script>
+
+
 }

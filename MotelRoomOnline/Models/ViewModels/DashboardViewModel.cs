@@ -6,6 +6,7 @@
         public string RoomName { get; set; }
         public string Image { get; set; }
         public string OwnerName { get; set; }
+        public string PhoneLand { get; set; }
         public decimal TotalRevenue { get; set; }
     }
 }

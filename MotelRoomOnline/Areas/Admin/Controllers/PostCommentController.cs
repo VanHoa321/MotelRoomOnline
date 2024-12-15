@@ -28,7 +28,7 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
         public IActionResult ListComment(int id)
         {
             var items = _context.PostComments.Where(i => i.PostId == id).OrderByDescending(i => i.PostCommentId).ToList();
-            ViewBag.Account = _context.Accounts.Where(i => i.RoleID == 3).ToList();
+            ViewBag.Account = _context.Accounts.Where(i => (i.RoleID == 3) || (i.RoleID == 4)).ToList();
             return View(items);
         }
 

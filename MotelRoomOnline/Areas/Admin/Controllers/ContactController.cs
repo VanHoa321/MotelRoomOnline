@@ -16,7 +16,7 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
         public IActionResult Index()
         {
             var items = _context.Contacts.OrderByDescending(i => i.ContactId).ToList();
-            ViewBag.Account = _context.Accounts.Where(i => i.RoleID == 3).ToList();
+            ViewBag.Account = _context.Accounts.Where(i => (i.RoleID == 3) || (i.RoleID == 4)).ToList();
             return View(items);
         }
 
