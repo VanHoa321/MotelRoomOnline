@@ -98,7 +98,7 @@
                                         <th>Ảnh</th>
                                         <th>Tên trọ</th>
                                         <th>Tổng thu</th>
-                                        <th>Chi tiết</th>
+                                        <th>Chức năng</th>
                                     </tr>
                                 </thead>
                                 <tbody id="showdata">
@@ -115,6 +115,9 @@
                                             <td>
                                                 <a class="btn btn-info btn-sm btn-view-invoices" data-room-id="@room.RoomId" data-room-name="@room.RoomName" data-toggle="modal" data-target="#modal-xl">
                                                     <i class="fa-regular fa-eye"></i>
+                                                </a>
+                                                <a class="btn btn-sm btn-success" style="padding-left:10px; padding-right: 10px" data-id="@room.RoomId" id="exportRoomInvoice">
+                                                    <i class="fa-regular fa-file-excel" title="Xuất file excel"></i>
                                                 </a>
                                             </td>
                                         </tr>
@@ -345,6 +348,17 @@
 
 <script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
 <script>
+    $('body').on('click', '#exportRoomInvoice', function () {
+        var roomId = $(this).data('id');
+        window.location.href = "/Landlord/ExportExcel/ExportInvoiceRoom?roomId=" + roomId;
+    });
+
+    $('body').on('click', '#exportCusInvoice', function () {
+        var cusId = $(this).data('id');
+        window.location.href = "/Landlord/ExportExcel/ExportInvoiceCus?cusId=" + cusId;
+    });
+</script>
+<script>
     $(document).on('click', '.btn-view-invoices', function () {
         var roomId = $(this).data('room-id');
         var roomName = $(this).data('room-name');
@@ -432,9 +446,12 @@
                         customer.name,
                         customer.cccd,
                         customer.totalRevenue.toLocaleString() + ' đ',          
-                        '<a class="btn btn-info btn-sm btn-view-cus" data-toggle="modal" data-target="#modal-xl1" data-cus-id="' + customer.cusId + '"> \
-                            <i class="fa-regular fa-eye"></i>\
-                        </a>'
+                        `<a class="btn btn-info btn-sm btn-view-cus" data-toggle="modal" data-target="#modal-xl1" data-cus-id="${customer.cusId}">
+                            <i class="fa-regular fa-eye" title="Xem lịch sử thuê khách hàng"></i>
+                        </a>
+                        <a class="btn btn-sm btn-success" style="padding-left:10px; padding-right:10px;" data-id="${customer.cusId}" id="exportCusInvoice">
+                            <i class="fa-regular fa-file-excel" title="Xuất file excel"></i>
+                        </a>`
                     ]);
                 });
                 table.draw();
@@ -494,30 +511,31 @@
             type: 'GET',
             data: { cusId: cusId },
             success: function (response) {
-                var tableBody = $('#example-table-6 tbody');
-                tableBody.empty();
-                console.log(response);
+                var table = $('#example-table-6').DataTable();
+                table.clear();
                 $('#title-cus').text('Lịch sử thuê của khách hàng ' + response.data[0].cus.fullName + ' (' + response.data[0].cus.code + ')');
                 response.data.forEach(function (item, index) {
                     var startDate = new Date(item.rentalMonth.startDate).toLocaleDateString('vi-VN');
                     var endDate = new Date(item.rentalMonth.endDate).toLocaleDateString('vi-VN');
-
-                    tableBody.append(`
-                         <tr>
-                            <td style="width: 5%;">${index + 1}</td>
-                            <td style="width: 10%;"><img src="${item.room.image}" style="width:80px; height:60px" /></td>
-                            <td style="width: 30%;">${item.room.roomName}</td>
-                            <td style="width: 27%;">${item.room.address}</td>
-                            <td style="width: 13%;">Từ ${startDate} đến ${endDate}</td>
-                            <td style="width: 25%;">${item.invoice.totalAmount.toLocaleString() + ' đ'}</td>
-                            <td style="width: 10%;">
-                                <a class="btn btn-info btn-sm btn-rental-detail" data-toggle="modal" data-target="#modal-lg" data-rental-month-id="${item.rentalMonth.rentalMonthId}">
-                                   <i class="fa-regular fa-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    `);
+                    table.row.add([
+                        index + 1,
+                        `<img src="${item.room.image}" style="width:80px; height:60px" />`,
+                        item.room.roomName,
+                        item.room.address,
+                        `Từ ${startDate} đến ${endDate}`,
+                        `${item.invoice.totalAmount.toLocaleString()} đ`,
+                        `<a class="btn btn-info btn-sm btn-rental-detail" data-toggle="modal" data-target="#modal-lg" data-rental-month-id="${item.rentalMonth.rentalMonthId}">
+                            <i class="fa-regular fa-eye"></i>
+                        </a>`
+                    ]).draw(false);
                 });
+                table.columns(0).header().to$().css("width", "5%");
+                table.columns(1).header().to$().css("width", "10%");
+                table.columns(2).header().to$().css("width", "30%");
+                table.columns(3).header().to$().css("width", "27%");
+                table.columns(4).header().to$().css("width", "13%");
+                table.columns(5).header().to$().css("width", "25%");
+                table.columns(6).header().to$().css("width", "10%");
                 $('#modal-xl2').modal('show');
             },
             error: function (jqXHR, textStatus, errorThrown) {

@@ -33,8 +33,8 @@
                                 <a type="button" class="btn btn-success" asp-area="Landlord" asp-controller="Customer" asp-action="Create">
                                     <i class="fa-solid fa-plus" title="Thêm mới khách hàng"></i>
                                 </a>
-                                <a href="#" type="button" id="loadData" class="btn btn-secondary">
-                                    <i class="fa-solid fa-rotate-right" style="color:white" title="Tải lại dữ liệu"></i>
+                                <a href="#" type="button" id="exportCustomerList" class="btn btn-success">
+                                    <i class="fa-regular fa-file-excel" style="color:white" title="Xuất file excel"></i>
                                 </a>
                             </div>
                         </div>
@@ -163,9 +163,8 @@
                 });
             })
 
-            $('#loadData').click(function (e) {
-                e.preventDefault();
-                LoadData();
+            $('body').on('click', '#exportCustomerList', function () {
+                window.location.href = "/Landlord/Customer/ExportCustomerList";
             });
         })
     </script>

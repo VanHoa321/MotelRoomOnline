@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MotelRoomOnline.Models;
 using MotelRoomOnline.Utilities;
@@ -118,6 +119,52 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
         {
             var items = _context.Customers.Where(c => c.AccountId == Functions.account.AccountId).OrderByDescending(c => c.CustomerId).Take(10).ToList();
             return Json(new { data = items, totalItems = items.Count});
+        }
+
+        public IActionResult ExportCustomerList()
+        {
+            var items = _context.Customers.Where(c => c.AccountId == Functions.account.AccountId).OrderByDescending(c => c.CustomerId).ToList();
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("DanhSachKhachHang");
+
+                worksheet.Cell(4, 3).Value = "STT";
+                worksheet.Cell(4, 4).Value = "Mã Khách Hàng";
+                worksheet.Cell(4, 5).Value = "Mã CCCD";
+                worksheet.Cell(4, 6).Value = "Tên Khách Hàng";
+                worksheet.Cell(4, 7).Value = "Ngày sinh";
+                worksheet.Cell(4, 8).Value = "Số Điện Thoại";
+                worksheet.Cell(4, 9).Value = "Giới tính";
+
+                worksheet.Range("C4:I4").Style.Font.Bold = true;
+
+                int row = 5;
+                int index = 1;
+                foreach (var item in items)
+                {
+                    worksheet.Cell(row, 3).Value = index++;
+                    worksheet.Cell(row, 4).Value = item.CustomerId;
+                    worksheet.Cell(row, 5).Value = item.Code;
+                    worksheet.Cell(row, 6).Value = item.FullName;
+                    worksheet.Cell(row, 7).Value = item.DOB.Value.ToString("dd/MM/yyyy");
+                    worksheet.Cell(row, 8).Value = item.Phone;
+                    worksheet.Cell(row, 9).Value = (item.Gender ?? false) ? "Nam" : "Nữ";
+                    row++;
+                }
+
+                worksheet.Columns().AdjustToContents();
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                "DanhSachKhachHang.xlsx");
+                }
+            }
         }
     }
 }
