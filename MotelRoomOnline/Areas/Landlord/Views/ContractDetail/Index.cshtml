@@ -106,7 +106,11 @@
             var quantity = parseFloat($(this).val()) || 0;
             var price = parseFloat($(this).data('price'));
             var roomServiceId = $(this).data('roomserviceid');
-
+            if (quantity < 0) {
+                toastr.error("Số lượng dùng không thể âm!");
+                $(this).val('');
+                quantity = 0;
+            }
             var serviceTotal = quantity * price;
             $('.service-total_' + roomServiceId).val(Functions.ToVnd(serviceTotal));
             total += serviceTotal;

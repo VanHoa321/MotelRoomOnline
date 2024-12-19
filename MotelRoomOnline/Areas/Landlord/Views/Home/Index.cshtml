@@ -235,6 +235,10 @@
                         </div>
                         <div class="card-body">
                             <div class="chart">
+                                <div class="form-group">
+                                    <select id="yearSe" class="form-control" style="width: 100px;">
+                                    </select>
+                                </div>
                                 <canvas id="areaChart" style="min-height: 350px; height: 350px; max-height: 350px; max-width: 100%;"></canvas>
                             </div>
                         </div>
@@ -336,6 +340,10 @@
                         </div>
                         <div class="card-body">
                             <div class="chart">
+                                <div class="form-group">
+                                    <select id="yearSelect" class="form-control" style="width: 100px;">
+                                    </select>
+                                </div>
                                 <canvas id="barChart" style="min-height: 350px; height: 350px; max-height: 350px; max-width: 100%;"></canvas>
                             </div>
                         </div>
@@ -544,151 +552,208 @@
         });
     });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     $(document).ready(function () {
-        $.ajax({
-            url: '/Landlord/Home/GetMonthlyCustomerCount',
-            type: 'GET',
-            success: function (data) {
-                var labels = [];
-                var rentalCounts = [];
-                for (var month = 1; month <= 12; month++) {
-                    labels.push('Tháng ' + month);
-                    var monthData = data.data.find(item => item.month === month);
-                    rentalCounts.push(monthData ? monthData.totalRentalMonths : 0);
-                }
-                var barChartCanvas = $('#barChart').get(0).getContext('2d');
+        var areaChart;
+        var currentYear = new Date().getFullYear();
 
-                var barChartData = {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Số lượt thuê',
-                        backgroundColor: '#00a65a',
-                        borderColor: '#00a65a',
-                        borderWidth: 1,
-                        data: rentalCounts,
-                    }]
-                };
+        function loadChartData(year) {
+            $.ajax({
+                url: '/Landlord/Home/GetMonthlyRevenue',
+                type: 'GET',
+                data: { year: year },
+                success: function (response) {
+                    console.log(response);
+                    var labels = response.data.map(function (item) {
+                        return 'Tháng ' + item.month;
+                    });
+                    var data = response.data.map(function (item) {
+                        return item.totalAmount;
+                    });
+                    console.log("Labels:", labels);
+                    console.log("Data:", data);
 
-                var barChartOptions = {
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    legend: {
-                        display: true
-                    },
-                    scales: {
-                        xAxes: [{
-                            gridLines: {
-                                display: true,
+                    var areaChartCanvas = $('#areaChart').get(0).getContext('2d');
+                    var areaChartData = {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Doanh thu theo tháng',
+                                backgroundColor: 'rgba(60,141,188,0.9)',
+                                borderColor: 'rgba(60,141,188,0.8)',
+                                pointRadius: false,
+                                pointColor: '#3b8bba',
+                                pointStrokeColor: 'rgba(60,141,188,1)',
+                                pointHighlightFill: '#fff',
+                                pointHighlightStroke: 'rgba(60,141,188,1)',
+                                data: data
                             },
-                            ticks: {
-                                beginAtZero: true
-                            },
-                            barPercentage: 0.7,
-                        }],
-                        yAxes: [{
-                            gridLines: {
-                                display: true,
-                            },
-                            ticks: {
-                                beginAtZero: true,
-                                callback: function (value) {
-                                    if (Number.isInteger(value)) {
-                                        return value;
+                        ]
+                    };
+
+                    var areaChartOptions = {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            xAxes: [{
+                                gridLines: {
+                                    display: true,
+                                }
+                            }],
+                            yAxes: [{
+                                gridLines: {
+                                    display: true,
+                                }
+                            }]
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function (tooltipItem, data) {
+                                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+                                    var value = tooltipItem.yLabel;
+                                    if (label) {
+                                        label += ': ';
                                     }
+                                    label += value.toLocaleString() + ' đ';
+                                    return label;
                                 }
                             }
-                        }]
+                        }
+                    };
+
+                    if (areaChart) {
+                        areaChart.destroy();
                     }
-                };
 
-                new Chart(barChartCanvas, {
-                    type: 'bar',
-                    data: barChartData,
-                    options: barChartOptions
-                });
-            },
+                    areaChart = new Chart(areaChartCanvas, {
+                        type: 'line',
+                        data: areaChartData,
+                        options: areaChartOptions
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching chart data:', error);
+                }
+            });
+        }
 
-            error: function (xhr, status, error) {
-                console.error('Error fetching data:', error);
+        var yearSelect = $('#yearSe');
+        for (var year = 2021; year <= 2050; year++) {
+            yearSelect.append(new Option(year, year));
+        }
+        yearSelect.val(currentYear);
+
+        loadChartData(currentYear);
+
+        yearSelect.change(function () {
+            var selectedYear = $(this).val();
+            loadChartData(selectedYear);
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        var barChart;
+
+        function populateYearOptions() {
+            const yearSelect = $('#yearSelect');
+            const currentYear = new Date().getFullYear();
+            for (let year = 2021; year <= 2050; year++) {
+                yearSelect.append(`<option value="${year}">${year}</option>`);
             }
+            yearSelect.val(currentYear);
+        }
+
+        function loadStatistics(year) {
+            $.ajax({
+                url: '/Landlord/Home/GetMonthlyCustomerCount',
+                type: 'GET',
+                data: { year: year },
+                success: function (data) {
+                    var labels = [];
+                    var rentalCounts = [];
+                    for (var month = 1; month <= 12; month++) {
+                        labels.push('Tháng ' + month);
+                        var monthData = data.data.find(item => item.month === month);
+                        rentalCounts.push(monthData ? monthData.totalRentalMonths : 0);
+                    }
+                    if (barChart) {
+                        barChart.destroy();
+                    }
+                    var barChartCanvas = $('#barChart').get(0).getContext('2d');
+
+                    var barChartData = {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Số lượt thuê',
+                            backgroundColor: '#00a65a',
+                            borderColor: '#00a65a',
+                            borderWidth: 1,
+                            data: rentalCounts,
+                        }]
+                    };
+
+                    var barChartOptions = {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        legend: {
+                            display: true
+                        },
+                        scales: {
+                            xAxes: [{
+                                gridLines: {
+                                    display: true,
+                                },
+                                ticks: {
+                                    beginAtZero: true
+                                },
+                                barPercentage: 0.7,
+                            }],
+                            yAxes: [{
+                                gridLines: {
+                                    display: true,
+                                },
+                                ticks: {
+                                    beginAtZero: true,
+                                    callback: function (value) {
+                                        if (Number.isInteger(value)) {
+                                            return value;
+                                        }
+                                    }
+                                }
+                            }]
+                        }
+                    };
+
+                        barChart = new Chart(barChartCanvas, {
+                        type: 'bar',
+                        data: barChartData,
+                        options: barChartOptions
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        }
+
+        populateYearOptions();
+
+        loadStatistics($('#yearSelect').val());
+
+        $('#yearSelect').on('change', function () {
+            var selectedYear = $(this).val();
+            loadStatistics(selectedYear);
         });
     });
 </script>
 <script>
     $(function () {
-
-        //-------------
-        //- AREA CHART -
-        //-------------
-        var statistics = @Html.Raw(ViewBag.Statistics);
-        var labels = statistics.map(function (item) {
-            return 'Tháng ' + item.Month;
-        });
-
-        var data = statistics.map(function (item) {
-            return item.TotalAmount;
-        });
-        var areaChartCanvas = $('#areaChart').get(0).getContext('2d');
-
-        var areaChartData = {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Doanh thu theo tháng',
-                    backgroundColor: 'rgba(60,141,188,0.9)',
-                    borderColor: 'rgba(60,141,188,0.8)',
-                    pointRadius: false,
-                    pointColor: '#3b8bba',
-                    pointStrokeColor: 'rgba(60,141,188,1)',
-                    pointHighlightFill: '#fff',
-                    pointHighlightStroke: 'rgba(60,141,188,1)',
-                    data: data
-                },
-            ]
-        }
-
-        var areaChartOptions = {
-            maintainAspectRatio: false,
-            responsive: true,
-            legend: {
-                display: false
-            },
-            scales: {
-                xAxes: [{
-                    gridLines: {
-                        display: true,
-                    }
-                }],
-                yAxes: [{
-                    gridLines: {
-                        display: true,
-                    }
-                }]
-            },
-            tooltips: {
-                mode: 'index', 
-                intersect: false,
-                callbacks: {
-                    label: function (tooltipItem, data) {
-                        var label = data.datasets[tooltipItem.datasetIndex].label || '';
-                        var value = tooltipItem.yLabel;
-                        if (label) {
-                            label += ': ';
-                        }
-                        label += value.toLocaleString() + ' đ';
-                        return label;
-                    }
-                }
-            }
-        }
-        new Chart(areaChartCanvas, {
-            type: 'line',
-            data: areaChartData,
-            options: areaChartOptions
-        })
-
         //-------------
         //- PIE CHART -
         //-------------

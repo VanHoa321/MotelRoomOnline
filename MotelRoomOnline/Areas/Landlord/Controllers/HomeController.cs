@@ -51,13 +51,18 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                 .Take(5)
                 .ToList();
 
-            var currentYear = DateTime.Now.Year;
+            ViewBag.TopRooms = JsonConvert.SerializeObject(topRooms);
+            return View(topRooms);
+        }
+
+        public IActionResult GetMonthlyRevenue(int year)
+        {
             var monthlyStatistics = (from invoice in _context.Invoices
                                      join contract in _context.Contracts
                                          on invoice.ContractId equals contract.ContractId
                                      join customer in _context.Customers
                                          on contract.CustomerId equals customer.CustomerId
-                                     where invoice.InvoiceDate.Year == currentYear &&
+                                     where invoice.InvoiceDate.Year == year &&
                                            customer.AccountId == Functions.account.AccountId
                                      group invoice by invoice.InvoiceDate.Month into grouped
                                      select new
@@ -65,8 +70,8 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                                          Month = grouped.Key,
                                          TotalAmount = grouped.Sum(i => i.TotalAmount)
                                      })
-                      .OrderBy(m => m.Month)
-                      .ToList();
+                  .OrderBy(m => m.Month)
+                  .ToList();
 
             var statistics = Enumerable.Range(1, 12).Select(month => new
             {
@@ -74,9 +79,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                 TotalAmount = monthlyStatistics.FirstOrDefault(m => m.Month == month)?.TotalAmount ?? 0
             }).ToList();
 
-            ViewBag.TopRooms = JsonConvert.SerializeObject(topRooms);
-            ViewBag.Statistics = JsonConvert.SerializeObject(statistics);
-            return View(topRooms);
+            return Json(new { data = statistics });
         }
 
         public IActionResult GetRoomInvoices(int roomId)
@@ -195,9 +198,12 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
             return Json(new { data = invoices });
         }
 
-        public IActionResult GetMonthlyCustomerCount()
+        public IActionResult GetMonthlyCustomerCount(int year)
         {
-            var currentYear = DateTime.Now.Year;
+            if (year <= 0)
+            {
+                year = DateTime.Now.Year;
+            }
 
             // Lấy số tháng thuê cho từng tháng trong năm hiện tại
             var monthlyRentalStatistics = (from rentalMonth in _context.RentalMonths
@@ -205,7 +211,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                                                on rentalMonth.ContractId equals contract.ContractId
                                            join customer in _context.Customers
                                                on contract.CustomerId equals customer.CustomerId
-                                           where rentalMonth.StartDate.Year == currentYear &&
+                                           where rentalMonth.StartDate.Year == year &&
                                                  customer.AccountId == Functions.account.AccountId
                                            group rentalMonth by rentalMonth.StartDate.Month into grouped
                                            select new

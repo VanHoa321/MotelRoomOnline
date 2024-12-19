@@ -21,7 +21,7 @@
                 <td>@(i++)</td>
                 <td>@item.StartDate.ToString("dd/MM/yyyy")</td>
                 <td>@item.EndDate.ToString("dd/MM/yyyy")</td>
-                <td class="text-info">@(item.Status == 1? "Chưa thanh toán" : "Đã thanh toán")</td>
+                <td class="text-@(item.Status == 1? "danger" : "info")">@(item.Status == 1 ? "Chưa thanh toán" : "Đã thanh toán")</td>
                 <td>
                     @if(item.Status == 1)
                     {
