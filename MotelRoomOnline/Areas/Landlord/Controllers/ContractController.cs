@@ -27,7 +27,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
             var items = (from contract in _context.Contracts join room in _context.Rooms
                          on contract.RoomId equals room.RoomId
                          where room.AccountId == accountId && contract.Status == 1
-                         orderby contract.RoomId descending
+                         orderby contract.CreatedDate descending
                          select contract).ToList();
 
             var listCustomer = _context.Customers.Where(c => c.AccountId == Functions.account.AccountId).ToList();
@@ -48,7 +48,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                          join room in _context.Rooms
                          on contract.RoomId equals room.RoomId
                          where room.AccountId == accountId && contract.Status == 0
-                         orderby contract.RoomId descending
+                         orderby contract.CreatedDate descending
                          select contract).ToList();
 
             var listCustomer = _context.Customers.Where(c => c.AccountId == Functions.account.AccountId).ToList();
@@ -74,6 +74,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
             Functions.RoomId = item.RoomId;
             ViewBag.Room = _context.Rooms.FirstOrDefault(r => r.RoomId == item.RoomId);
             ViewBag.Customer = _context.Customers.FirstOrDefault(c => c.CustomerId == item.CustomerId);
+            ViewBag.ContractFile = _context.ContractFiles.Where(i => i.ContractId == id).ToList();
             return View(item);
         }
 
@@ -126,6 +127,59 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                 }
             }
             return View(create);
+        }
+
+        [HttpPost]
+        public IActionResult UploadFile(List<IFormFile> files)
+        {
+            if (files == null || files.Count == 0)
+            {
+                return Json(new { success = false, message = "Không có file được tải lên!" });
+            }
+
+            // Tạo đường dẫn thư mục nếu chưa tồn tại
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files_landlord", "contracts");
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            foreach (var file in files)
+            {
+                var fileName = Path.GetFileName(file.FileName);
+                var filePath = Path.Combine(uploadPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
+                var contractFile = new ContractFile
+                {
+                    ContractId = Functions.ContractId,
+                    FileName = fileName,
+                    FilePath = $"/files_landlord/contracts/{fileName}",
+                    FileType = file.ContentType,
+                    UploadedAt = DateTime.Now
+                };
+                _context.ContractFiles.Add(contractFile);
+                _context.SaveChanges();
+            }
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public IActionResult DeleteFile(long id)
+        {
+            var contractFile = _context.ContractFiles.Find(id);
+
+            if (contractFile != null)
+            {
+                _context.ContractFiles.Remove(contractFile);
+                _context.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false, message = "File không tồn tại!" });
         }
 
         [HttpPost]
@@ -212,6 +266,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
             Functions.RoomId = item.RoomId;
             ViewBag.Room = _context.Rooms.FirstOrDefault(r => r.RoomId == item.RoomId);
             ViewBag.Customer = _context.Customers.FirstOrDefault(c => c.CustomerId == item.CustomerId);
+            ViewBag.ContractFile = _context.ContractFiles.Where(i => i.ContractId == id).ToList();
             return View(item);
         }
 

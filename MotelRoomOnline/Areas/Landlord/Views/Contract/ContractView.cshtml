@@ -4,6 +4,7 @@
     ViewData["Title"] = "Chi tiết hợp đồng";
     Room room = ViewBag.Room;
     Customer customer = ViewBag.Customer;
+    List<ContractFile> contractFiles = ViewBag.ContractFile;
 }
 
 <div class="content-wrapper">
@@ -82,6 +83,25 @@
                             </table>
                             <h4 class="text-info mt-4">Thông tin hợp đồng</h4>
                             <div class="row">
+                                <div class="col-md-12 my-3">
+                                    @if (contractFiles != null && contractFiles.Count > 0)
+                                    {
+                                        <div class="row">
+                                            @foreach (var file in contractFiles)
+                                            {
+                                                <div class="col-md-2 col-sm-2 my-2 text-center">
+                                                    <div class="file-item" style="margin: 3px;">
+                                                        <img src="@file.FilePath" alt="@file.FileName" class="img-fluid" style="width: 100%; height: 100px; object-fit: cover;" onclick="window.open('@file.FilePath', '_blank')" />
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>Không có tệp quản lý nào.</p>
+                                    }
+                                </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Ngày tạo</label>

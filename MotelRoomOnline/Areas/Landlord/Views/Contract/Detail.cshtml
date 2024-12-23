@@ -4,6 +4,7 @@
     ViewData["Title"] = "Chi tiết hợp đồng";
     Room room = ViewBag.Room;
     Customer customer = ViewBag.Customer;
+    List<ContractFile> contractfiles = ViewBag.ContractFile;
 }
 
 <div class="content-wrapper">
@@ -82,6 +83,16 @@
                             </table>
                             <h4 class="text-info mt-4">Thông tin hợp đồng</h4>
                             <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group" style="display:flex; margin-top:20px">
+                                        <div id="drop_zone" style="border: 2px dashed #007bff; padding: 40px; width: 100%; text-align: center; cursor: pointer;">
+                                            <span style="color:#007bff">Tải lên tài liệu quản lý hợp đồng</span>
+                                            <div id="file_list"></div>
+                                        </div>
+                                        <input type="file" class="form-control" id="file_input" style="display:none;" multiple accept="image/*" />
+                                    </div>
+                                    <button type="submit" id="createContract" class="btn btn-info mb-3"><i class="fa-solid fa-floppy-disk" title="Tạo hợp đồng thuê trọ"></i></button>
+                                </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Ngày tạo</label>
@@ -112,7 +123,7 @@
                                         <label>Tiền cọc</label>
                                         <input type="text" class="form-control" value="@Functions.ToVnd(Model.DepositAmount) đ" readonly>
                                     </div>
-                                </div>
+                                </div>                               
                             </div>
                             <div class="form-group">
                                 <a class="btn btn-success addRental">
@@ -135,6 +146,215 @@
 </div>
 
 <script src="~/admin/assets/plugins/jquery/jquery.min.js"></script>
+
+<script>
+    const uploadedFiles = [];
+    const maxFiles = 5;
+    const dropZone = document.getElementById('drop_zone');
+    const fileInput = document.getElementById('file_input');
+    const fileList = document.getElementById('file_list');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const existingFiles = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(contractfiles ?? new List<ContractFile>()));
+        if (existingFiles && existingFiles.length > 0) {
+            existingFiles.forEach(file => {
+                const fileObj = {
+                    id: file.Id,
+                    name: file.FileName,
+                    url: file.FilePath,
+                    type: file.FileType,
+                };
+
+                uploadedFiles.push(fileObj);
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'file-item';
+                fileDiv.style.position = 'relative';
+                fileDiv.style.display = 'inline-block';
+                fileDiv.style.margin = '5px';
+
+                const img = document.createElement('img');
+                img.src = fileObj.url;
+                img.alt = fileObj.name;
+                img.style.width = '100px';
+                img.style.height = '100px';
+                img.style.objectFit = 'cover';
+
+                img.onclick = () => {
+                    window.open(img.src, '_blank');
+                };
+
+                const removeButton = document.createElement('button');
+                removeButton.style.position = 'absolute';
+                removeButton.style.top = '5px';
+                removeButton.style.right = '5px';
+                removeButton.style.backgroundColor = 'red';
+                removeButton.style.color = 'white';
+                removeButton.style.border = 'none';
+                removeButton.style.cursor = 'pointer';
+
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-trash';
+                icon.style.fontSize = '16px';
+                removeButton.appendChild(icon);
+
+                removeButton.onclick = (e) => {
+                    e.stopPropagation();
+                    removeFile(fileObj.id, fileDiv);
+                };
+
+                fileDiv.appendChild(img);
+                fileDiv.appendChild(removeButton);
+                fileList.appendChild(fileDiv);
+            });
+        }
+    });
+
+    dropZone.addEventListener('click', () => {
+        if (uploadedFiles.length < maxFiles) {
+            fileInput.click();
+        }
+    });
+
+    dropZone.addEventListener('dragover', (event) => {
+        event.preventDefault();
+    });
+
+    dropZone.addEventListener('drop', (event) => {
+        event.preventDefault();
+        handleFiles(event.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', (event) => {
+        handleFiles(event.target.files);
+    });
+
+    function handleFiles(files) {
+        for (let i = 0; i < files.length; i++) {
+            if (uploadedFiles.length >= maxFiles) {
+                toastr.error(`Bạn chỉ được tải tối đa ${maxFiles} ảnh.`);
+                break;
+            }
+
+            const file = files[i];
+            uploadedFiles.push(file);
+
+            const fileDiv = document.createElement('div');
+            fileDiv.className = 'file-item';
+            fileDiv.style.position = 'relative';
+            fileDiv.style.display = 'inline-block';
+            fileDiv.style.margin = '5px';
+
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.alt = file.name;
+            img.style.width = '100px';
+            img.style.height = '100px';
+            img.style.objectFit = 'cover';
+
+            img.onclick = () => {
+                window.open(img.src, '_blank');
+            };
+
+            const removeButton = document.createElement('button');
+            removeButton.style.position = 'absolute';
+            removeButton.style.top = '5px';
+            removeButton.style.right = '5px';
+            removeButton.style.backgroundColor = 'red';
+            removeButton.style.color = 'white';
+            removeButton.style.border = 'none';
+            removeButton.style.cursor = 'pointer';
+
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-trash';
+            icon.style.fontSize = '16px';
+            removeButton.appendChild(icon);
+
+            removeButton.onclick = (e) => {
+                e.stopPropagation();
+                removeFile(file.id);
+                fileDiv.remove();
+            };
+
+            fileDiv.appendChild(img);
+            fileDiv.appendChild(removeButton);
+            fileList.appendChild(fileDiv);
+        }
+
+        if (uploadedFiles.length >= maxFiles) {
+            dropZone.style.cursor = 'not-allowed';
+        }
+    }
+
+    function removeFile(fileId, fileDiv) {
+        Swal.fire({
+            title: "Xác nhận xóa file?",
+            text: "Bạn có chắc chắn muốn xóa file này không?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Xóa",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const index = uploadedFiles.findIndex(file => file.id === fileId);
+                if (index !== -1) {
+                    const fileToDelete = uploadedFiles[index];
+                    uploadedFiles.splice(index, 1);
+                    $.ajax({
+                        url: '/Landlord/Contract/DeleteFile',
+                        type: 'POST',
+                        data: { id: fileId },
+                        success: function (response) {
+                            console.log('File deleted successfully:', fileToDelete.name);
+                            toastr.success('Xóa file thành công!');
+                            fileDiv.remove();
+                            if (uploadedFiles.length < maxFiles) {
+                                dropZone.style.cursor = 'pointer';
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error deleting file:', error);
+                            toastr.error('Có lỗi xảy ra khi xóa ảnh!');
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    document.getElementById('createContract').addEventListener('click', function () {
+        if (uploadedFiles.length === 0) {
+            toastr.error('Vui lòng tải lên ảnh minh chứng hợp đồng!');
+            return;
+        }
+
+        const formData = new FormData();
+
+        uploadedFiles.forEach((file) => {
+            formData.append('files', file);
+        });
+
+        fetch('/Landlord/Contract/UploadFile', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Không có dữ liệu trả về!');
+            })
+            .then(data => {
+                console.log('Success:', data);
+                toastr.success('Tải lên thành công!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toastr.error('Có lỗi xảy ra khi tải lên!');
+            });
+    });
+</script>
 
 @section Scripts{
     <script src="~/admin/assets/plugins/jquery-validation/jquery.validate.min.js"></script>

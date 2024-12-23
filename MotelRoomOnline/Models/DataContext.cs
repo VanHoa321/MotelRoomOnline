@@ -37,5 +37,6 @@ namespace MotelRoomOnline.Models
         public DbSet<PostComment> PostComments { get; set; }
         public DbSet<Packages> packages { get; set; }
         public DbSet<AccountUpgrade> accountUpgrades { get; set; }
+        public DbSet<ContractFile> ContractFiles { get; set; }
     }
 }
