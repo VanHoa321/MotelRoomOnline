@@ -2,8 +2,29 @@
 @model MotelRoomOnline.Models.ViewModels.RentalMonthDetailsViewModel
 @{
     ViewData["Title"] = "Chi tiết tháng thuê";
+    Customer customer = ViewBag.Customer;
 }
+<style>
+    #loadingOverlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        z-index: 9999;
+        text-align: center;
+        padding-top: 20%;
+        font-size: 24px;
+    }
 
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
@@ -20,6 +41,12 @@
             </div>
         </div>
     </section>
+    <!-- Overlay -->
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999; color: white; text-align: center; padding-top: 20%;">
+        <i class="fa-solid fa-spinner" style="font-size: 100px; animation: spin 2s infinite;"></i>
+        <h2>Đang gửi email...</h2>
+        <p>Vui lòng chờ...</p>
+    </div>
 
     <section class="content">
         <div class="container-fluid">
@@ -29,6 +56,28 @@
                         <form method="post" asp-action="Index">
                             <input type="hidden" name="RentalMonthId" value="@Model.RentalMonth.RentalMonthId" />
                             <div class="card-body">
+                                <h4 class="text-info mt-2">Thông tin khách hàng</h4>
+                                <table class="table table-bordered table-hover" style="margin-bottom:20px">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:150px">Hình ảnh</th>
+                                            <th style="width:400px">Họ tên</th>
+                                            <th style="width:300px">CCCD</th>
+                                            <th style="width:100px">Ngày sinh</th>
+                                            <th style="width:100px">SĐT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><img src="@customer.Avatar" style="width:80px; height:80px" /></td>
+                                            <td>@customer.FullName</td>
+                                            <td>@customer.Code</td>
+                                            <td>@customer.DOB.Value.ToString("dd/MM/yyyy")</td>
+                                            <td>@customer.Phone</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <h4 class="text-info mt-4">Thông tin hóa đơn</h4>
                                 <div class="row">
                                     <div class="col-md-4 mt-2">
                                         <div class="form-group row">
@@ -86,6 +135,7 @@
                             </div>
                             <div class="card-footer">
                                 <a href="javascript:history.back()" class="btn btn-warning"><i class="fa-solid fa-rotate-left" style="color:white" title="Quay lại"></i></a>
+                                <a href="javascript:void(0)" class="btn btn-success" onclick="sendEmail()"><i class="fa-regular fa-envelope" title="Gửi Email thanh toán"></i></a>
                                 <button type="submit" class="btn btn-info"><i class="fa-solid fa-money-bill" title="Thanh toán"></i></button>
                             </div>
                         </form>
@@ -103,14 +153,17 @@
         var priceRoom = parseFloat('@Model.RentalMonth.PriceRoom');
 
         $('.service-quantity').each(function () {
-            var quantity = parseFloat($(this).val()) || 0;
-            var price = parseFloat($(this).data('price'));
-            var roomServiceId = $(this).data('roomserviceid');
-            if (quantity < 0) {
-                toastr.error("Số lượng dùng không thể âm!");
-                $(this).val('');
+            var quantityInput = $(this);
+            var quantity = quantityInput.val();
+            var price = parseFloat(quantityInput.data('price'));
+            var roomServiceId = quantityInput.data('roomserviceid');
+
+            if (quantity === '' || isNaN(quantity)) {
                 quantity = 0;
+            } else {
+                quantity = parseFloat(quantity);
             }
+
             var serviceTotal = quantity * price;
             $('.service-total_' + roomServiceId).val(Functions.ToVnd(serviceTotal));
             total += serviceTotal;
@@ -126,8 +179,77 @@
         }
     };
 
-    // Gọi hàm tính tổng ngay khi trang được tải
     $(document).ready(function () {
         calculateTotal();
+
+        $('.service-quantity').on('input', function () {
+            var quantityInput = $(this);
+            var quantity = quantityInput.val();
+
+            if (quantity !== '' && parseFloat(quantity) <= 0) {
+                toastr.error("Số lượng phải lớn hơn 0!");
+                quantityInput.val(1);
+            }
+            calculateTotal();
+        });
     });
+</script>
+
+<script>
+    function sendEmail() {
+        var rentalMonthId = parseInt('@Model.RentalMonth.RentalMonthId', 10);
+        var totalAmountString = $('#totalAmount').val();
+        var totalAmount = parseFloat(totalAmountString.replace(/\./g, '').replace(/,/g, '.'));
+        var services = [];
+        var hasError = false;
+        @foreach (var items in Model.RoomServices)
+        {
+            var name = Model.Services.FirstOrDefault(s => s.ServiceId == items.ServiceId);
+            <text>
+                var quantity = $('input[name="ServiceQuantities[@items.RoomServiceId]"]').val();
+                if (quantity === '' || isNaN(quantity)) {
+                    toastr.error("Số lượng cho dịch vụ @name?.ServiceName phải lớn hơn 0!");
+                    hasError = true;
+                }
+                services.push({
+                    serviceId: '@items.ServiceId',
+                    serviceName: '@name?.ServiceName',
+                    price: parseFloat('@items.Price'),
+                    quantity: parseInt(quantity || 1)
+                });
+            </text>
+        }
+
+        if (hasError) {
+            toastr.error("Vui lòng sửa các lỗi trước khi gửi hóa đơn!");
+            return;
+        }
+
+        $.ajax({
+            url: '/Landlord/SendCustomerInvoice/SendEmail',
+            type: 'POST',
+            data: { 
+                rentalMonthId: rentalMonthId,
+                totalAmount: totalAmount,
+                services: services
+            },
+            beforeSend: function () {
+                $('#loadingOverlay').show();
+            },
+            success: function (response) {
+                $('#loadingOverlay').hide();
+                if (response.success) {
+                    toastr.success("Hóa đơn tháng thuê đã được gửi cho khách hàng");
+                }
+                else{
+                    toastr.error("Có lỗi xảy ra khi gửi hóa đơn");
+                }
+            },
+            error: function (xhr) {
+                $('#loadingOverlay').hide();
+                console.error(xhr.responseText);
+                alert('Có lỗi xảy ra: ' + xhr.responseText);
+            }
+        });
+    }
 </script>

@@ -79,7 +79,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
 
         public IActionResult Create()
         {
-            var rooms = (from r in _context.Rooms.Where(r =>r.RoomStatusId == 1)
+            var rooms = (from r in _context.Rooms.Where(r =>(r.RoomStatusId == 1 && r.AccountId == Functions.account.AccountId))
                             select new SelectListItem()
                             {
                                 Text = r.RoomName,
@@ -91,7 +91,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                 Value = "0"
             });
 
-            var customer = (from c in _context.Customers
+            var customer = (from c in _context.Customers.Where(i => i.AccountId == Functions.account.AccountId)
                          select new SelectListItem()
                          {
                              Text = c.Phone + " - "+ c.FullName,

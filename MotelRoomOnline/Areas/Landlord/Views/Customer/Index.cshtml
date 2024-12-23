@@ -48,6 +48,7 @@
                                         <th>CCCD</th>
                                         <th>Ngày sinh</th>
                                         <th>SĐT</th>
+                                        <th>Email</th>
                                         <th>Chức năng</th>
                                     </tr>
                                 </thead>
@@ -64,6 +65,7 @@
                                             <td>@item.Code</td>
                                             <td>@item.DOB.Value.ToString("dd/MM/yyyy")</td>
                                             <td>@item.Phone</td>                                           
+                                            <td>@item.Email</td>                                           
                                             <td>
                                                 <a asp-area="Landlord" asp-controller="Customer" asp-action="Edit"
                                                    asp-route-id="@item.CustomerId" class="btn btn-info btn-sm"
@@ -112,6 +114,7 @@
                                     <td>${item.code}</td>
                                     <td>${formatDate(new Date(item.dob))}</td>
                                     <td>${item.phone}</td>
+                                    <td>${item.email}</td>
                                     <td>
                                        <a href="/Landlord/Customer/Edit/${item.customerId}" class="btn btn-info btn-sm" title="Sửa thông tin khách hàng">
                                           <i class="fa-solid fa-pen-to-square"></i>

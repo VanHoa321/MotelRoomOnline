@@ -36,6 +36,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                 ServiceQuantities = new Dictionary<long, int>(),
                 ServicePrices = roomServices.ToDictionary(rs => rs.RoomServiceId, rs => rs.Price)
             };
+            ViewBag.Customer = _context.Customers.FirstOrDefault(i => i.CustomerId == contract.CustomerId);
             return View(viewModel);
         }
 
@@ -103,6 +104,7 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                 Services = service
 
             };
+            ViewBag.Customer = _context.Customers.FirstOrDefault(i => i.CustomerId == contract.CustomerId);
             return View(viewModel);
         }
     }

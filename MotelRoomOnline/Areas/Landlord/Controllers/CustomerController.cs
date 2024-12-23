@@ -100,8 +100,8 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
         [HttpPost]
         public IActionResult Delete(long? id)
         {
-            var check = _context.Contracts.Find(id);
-            if (check != null)
+            var check = _context.Contracts.Any(i => i.CustomerId == id);
+            if (check)
             {
                 return Json(new { success = false });
             }

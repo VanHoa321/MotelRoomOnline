@@ -70,6 +70,11 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Delete(int? id)
         {
+            var check = _context.Rooms.Any(r => r.RoomStatusId == id);
+            if (check)
+            {
+                return Json(new { success = false });
+            }
             var item = _context.RoomStatuses.Find(id);
             if (item != null)
             {

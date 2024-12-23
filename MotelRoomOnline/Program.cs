@@ -18,6 +18,7 @@ builder.Services.AddSingleton<IVnPayService, VnPayService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddHostedService<PremiumAccountChecker>();
+builder.Services.AddTransient<EmailService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

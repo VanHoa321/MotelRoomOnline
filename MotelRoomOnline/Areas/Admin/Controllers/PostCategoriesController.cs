@@ -73,6 +73,11 @@ namespace MotelRoomOnline.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Delete(int? id)
         {
+            var check = _context.Posts.Any(r => r.PostCategoryId == id);
+            if (check)
+            {
+                return Json(new { success = false });
+            }
             var item = _context.PostCategories.Find(id);
             if (item != null)
             {

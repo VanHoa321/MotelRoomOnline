@@ -77,6 +77,10 @@
                                     <input type="text" asp-for="Phone" class="form-control" placeholder="Nhập số điện thoại">
                                 </div>
                                 <div class="form-group">
+                                    <label asp-for="Email">Email</label>
+                                    <input type="text" asp-for="Email" class="form-control" placeholder="Nhập email khách hàng">
+                                </div>
+                                <div class="form-group">
                                     <label asp-for="Description">Description</label>
                                     <textarea class="form-control mb-3" asp-for="Description" placeholder="Nhập mô tả thêm" style=" height: 100px"></textarea>
                                 </div>
@@ -112,6 +116,7 @@
                     Code: {
                         required: true,
                         minlength: 10,
+                        maxlength: 15,
                     },
                     FullName: {
                         required: true,
@@ -129,6 +134,7 @@
                     Code: {
                         required: "Mã CCCD không được để trống",
                         minlength: "Mã CCCD phải có ít nhất {0} ký tự",
+                        maxlength: "Mã CCCD tối đa {0} ký tự", 
                     },
                     FullName: {
                         required: "Tên khách hàng không được để trống",

@@ -74,7 +74,6 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
             {
                 if (viewModel.SelectedCriteriaIds != null && viewModel.SelectedCriteriaIds.Contains(criteriaId))
                 {
-                    // Tiêu chí vẫn được chọn, không cần làm gì
                 }
                 else
                 {

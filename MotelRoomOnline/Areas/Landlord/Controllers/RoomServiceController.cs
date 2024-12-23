@@ -55,7 +55,6 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                 return RedirectToAction("Index", new { id = viewModel?.Room?.RoomId });
             }
 
-            // Lấy thông tin phòng
             var roomData = await _context.Rooms
                 .FirstOrDefaultAsync(r => r.RoomId == viewModel.Room.RoomId);
 
@@ -103,7 +102,6 @@ namespace MotelRoomOnline.Areas.Landlord.Controllers
                 }
             }
 
-            // Lưu thay đổi vào cơ sở dữ liệu
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index", new { id = roomData.RoomId });

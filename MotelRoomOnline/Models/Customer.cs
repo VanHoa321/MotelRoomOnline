@@ -21,6 +21,8 @@ namespace MotelRoomOnline.Models
 
         public string? Phone { get; set; }
 
+        public string? Email { get; set; }
+
         public string? Description { get; set; }
 
         public int AccountId { get; set; }
