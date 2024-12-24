@@ -243,6 +243,8 @@
             fileDiv.style.position = 'relative';
             fileDiv.style.display = 'inline-block';
             fileDiv.style.margin = '5px';
+            fileDiv.dataset.index = uploadedFiles.length - 1;
+            fileDiv.file = file;
 
             const img = document.createElement('img');
             img.src = URL.createObjectURL(file);
@@ -271,8 +273,7 @@
 
             removeButton.onclick = (e) => {
                 e.stopPropagation();
-                removeFile(file.id);
-                fileDiv.remove();
+                removeFile(0, fileDiv);
             };
 
             fileDiv.appendChild(img);
@@ -286,41 +287,55 @@
     }
 
     function removeFile(fileId, fileDiv) {
-        Swal.fire({
-            title: "Xác nhận xóa file?",
-            text: "Bạn có chắc chắn muốn xóa file này không?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Xóa",
-            cancelButtonText: "Hủy"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const index = uploadedFiles.findIndex(file => file.id === fileId);
-                if (index !== -1) {
-                    const fileToDelete = uploadedFiles[index];
-                    uploadedFiles.splice(index, 1);
-                    $.ajax({
-                        url: '/Landlord/Contract/DeleteFile',
-                        type: 'POST',
-                        data: { id: fileId },
-                        success: function (response) {
-                            console.log('File deleted successfully:', fileToDelete.name);
-                            toastr.success('Xóa file thành công!');
-                            fileDiv.remove();
-                            if (uploadedFiles.length < maxFiles) {
-                                dropZone.style.cursor = 'pointer';
+        if (fileId > 0) {
+            // Nếu file có ID (đã lưu trong DB), yêu cầu xác nhận xóa
+            Swal.fire({
+                title: "Xác nhận xóa file?",
+                text: "Bạn có chắc chắn muốn xóa file này không?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Xóa",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const index = uploadedFiles.findIndex(file => file.id === fileId);
+                    if (index !== -1) {
+                        const fileToDelete = uploadedFiles[index];
+                        uploadedFiles.splice(index, 1);
+                        $.ajax({
+                            url: '/Landlord/Contract/DeleteFile',
+                            type: 'POST',
+                            data: { id: fileId },
+                            success: function (response) {
+                                console.log('File deleted successfully:', fileToDelete.name);
+                                toastr.success('Xóa file thành công!');
+                                fileDiv.remove();
+                                if (uploadedFiles.length < maxFiles) {
+                                    dropZone.style.cursor = 'pointer';
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error deleting file:', error);
+                                toastr.error('Có lỗi xảy ra khi xóa ảnh!');
                             }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error deleting file:', error);
-                            toastr.error('Có lỗi xảy ra khi xóa ảnh!');
-                        }
-                    });
+                        });
+                    }
+                }
+            });
+        } else {
+            // Nếu file không có ID, xóa trực tiếp
+            const index = uploadedFiles.indexOf(fileDiv.file);
+            if (index !== -1) {
+                uploadedFiles.splice(index, 1);
+                fileDiv.remove();
+                toastr.success('File đã được xóa!');
+                if (uploadedFiles.length < maxFiles) {
+                    dropZone.style.cursor = 'pointer';
                 }
             }
-        });
+        }
     }
 
     document.getElementById('createContract').addEventListener('click', function () {
